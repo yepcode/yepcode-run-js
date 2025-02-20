@@ -2,9 +2,20 @@
   "name": "@yepcode/run",
   "version": "1.0.0",
   "description": "YepCode Run",
-  "homepage": "https://yepcode.io/docs/run/",
+  "homepage": "https://yepcode.io/run/",
   "author": "YepCode Developers <developers@yepcode.io>",
   "license": "See LICENSE file",
+  "keywords": [
+    "yepcode",
+    "run"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": "20",
+    "npm": "10"
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -21,5 +32,6 @@
   },
   "dependencies": {
     "dotenv": "^16.4.7"
-  }
+  },
+  "types": "dist/index.d.ts"
 }

@@ -1,0 +1,19 @@
+name: branches-master
+on:
+  push:
+    branches:
+      - master
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  dependency_track:
+    uses: yepcode/github-actions/.github/workflows/npm-run-dependencytrack.yml@master
+    with:
+      nodeVersion: "20.12"
+      dependencyTrackHostUrl: ${{ vars.DTRACK_HOST_URL}}
+      dependencyTrackProjectId: ${{ vars.DTRACK_PROJECT_ID }}
+    secrets:
+      dependencyTrackApiKey: ${{ secrets.DTRACK_API_KEY}}
+  build:
+    uses: ./.github/workflows/build.yml
