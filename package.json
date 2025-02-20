@@ -16,6 +16,9 @@
     "node": "20",
     "npm": "10"
   },
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
