@@ -107,10 +107,18 @@ export class Execution {
     return 1000;
   }
 
+  private _logAlreadyProcessed(log: Log): boolean {
+    return (
+      this.logs.find(
+        (l) => l.timestamp === log.timestamp && l.message === log.message
+      ) !== undefined
+    );
+  }
+
   private async _pollLogs(): Promise<void> {
     const currentLogs = await this._fetchLogs();
     currentLogs.forEach((log) => {
-      if (!this.logs.find((l) => l.timestamp === log.timestamp)) {
+      if (!this._logAlreadyProcessed(log)) {
         this.logs.push(log);
         this.events?.onLog?.(log);
       }
