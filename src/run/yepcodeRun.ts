@@ -117,7 +117,7 @@ export class YepCodeRun {
       };
     }
 
-    return new Execution({
+    const execution = new Execution({
       yepCodeApi: this.yepCodeApi,
       executionId,
       events: {
@@ -126,6 +126,8 @@ export class YepCodeRun {
         onError: wrappedOnError,
       },
     });
+    await execution.init();
+    return execution;
   }
 
   async getExecution(executionId: string): Promise<Execution> {
@@ -133,9 +135,11 @@ export class YepCodeRun {
       throw new Error("executionId is required");
     }
 
-    return new Execution({
+    const execution = new Execution({
       yepCodeApi: this.yepCodeApi,
       executionId,
     });
+    await execution.init();
+    return execution;
   }
 }

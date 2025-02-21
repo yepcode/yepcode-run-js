@@ -19,6 +19,8 @@ export class Execution {
   public parameters?: any;
   public comment?: string;
 
+  private initPromise?: Promise<void>;
+
   private donePromise?: Promise<void>;
   private doneResolve?: () => void;
 
@@ -41,6 +43,11 @@ export class Execution {
       this.doneResolve = resolve;
     });
     this.pollPromise = this._poll();
+    this.initPromise = this.pollPromise;
+  }
+
+  async init(): Promise<void> {
+    await this.initPromise;
   }
 
   private _isDone(status?: ExecutionStatus): boolean {
