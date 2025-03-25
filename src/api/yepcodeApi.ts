@@ -171,8 +171,15 @@ export class YepCodeApi {
     }
 
     if (!response.ok) {
+      let message;
+      try {
+        const errorResponse = await response.json();
+        message = errorResponse.message;
+      } catch (e) {
+        message = response.statusText;
+      }
       throw new YepCodeApiError(
-        `HTTP error in endpoint ${method} ${endpoint} status: ${response.status}`,
+        `HTTP error ${response.status} in endpoint ${method} ${endpoint}: ${message}`,
         response.status
       );
     }
