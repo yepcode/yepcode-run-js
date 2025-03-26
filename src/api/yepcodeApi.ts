@@ -34,12 +34,13 @@ export class YepCodeApi {
 
   constructor(config: YepCodeApiConfig = {}) {
     const finalConfig = {
-      authUrl:
-        "https://cloud.yepcode.io/auth/realms/yepcode/protocol/openid-connect/token",
       apiHost: "https://cloud.yepcode.io",
       timeout: 60000,
       ...config,
     };
+    if (!finalConfig.authUrl) {
+      finalConfig.authUrl = `${finalConfig.apiHost}/auth/realms/yepcode/protocol/openid-connect/token`;
+    }
 
     if (
       !finalConfig.accessToken &&
