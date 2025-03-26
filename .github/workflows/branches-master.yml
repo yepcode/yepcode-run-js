@@ -3,17 +3,14 @@ on:
   push:
     branches:
       - master
+      - spike/*
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
-  dependency_track:
-    uses: yepcode/github-actions/.github/workflows/npm-run-dependencytrack.yml@master
-    with:
-      nodeVersion: "20.12"
-      dependencyTrackHostUrl: ${{ vars.DTRACK_HOST_URL}}
-      dependencyTrackProjectId: ${{ vars.DTRACK_PROJECT_ID }}
-    secrets:
-      dependencyTrackApiKey: ${{ secrets.DTRACK_API_KEY}}
+  tests:
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
   build:
+    needs: tests
     uses: ./.github/workflows/build.yml
