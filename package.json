@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest",
+    "test": "jest --coverage --verbose",
     "build": "tsc --project tsconfig.json"
   },
   "devDependencies": {
