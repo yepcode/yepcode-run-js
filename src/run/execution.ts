@@ -3,6 +3,8 @@ import { ExecutionStatus, Log, ExecutionEvents, TimelineEvent } from "../types";
 
 export class Execution {
   private yepCodeApi: YepCodeApi;
+  public id: string;
+  /** @deprecated Use `id` instead */
   public executionId: string;
   private events?: ExecutionEvents;
 
@@ -37,6 +39,7 @@ export class Execution {
     events?: ExecutionEvents;
   }) {
     this.yepCodeApi = yepCodeApi;
+    this.id = executionId;
     this.executionId = executionId;
     this.events = events;
     this.donePromise = new Promise((resolve) => {
@@ -193,10 +196,10 @@ export class Execution {
 
   async kill(): Promise<void> {
     try {
-      await this.yepCodeApi.killExecution(this.executionId);
+      await this.yepCodeApi.killExecution(this.id);
     } catch (error: any) {
       if (error.status === 404) {
-        throw new Error(`Execution not found for id: ${this.executionId}`);
+        throw new Error(`Execution not found for id: ${this.id}`);
       }
       throw error;
     }
@@ -204,9 +207,7 @@ export class Execution {
 
   async rerun(): Promise<Execution> {
     try {
-      const executionId = await this.yepCodeApi.rerunExecution(
-        this.executionId
-      );
+      const executionId = await this.yepCodeApi.rerunExecution(this.id);
       return new Execution({
         yepCodeApi: this.yepCodeApi,
         executionId,
@@ -214,7 +215,7 @@ export class Execution {
       });
     } catch (error: any) {
       if (error.status === 404) {
-        throw new Error(`Execution not found for id: ${this.executionId}`);
+        throw new Error(`Execution not found for id: ${this.id}`);
       }
       throw error;
     }
