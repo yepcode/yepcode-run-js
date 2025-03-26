@@ -1,6 +1,6 @@
 import { YepCodeRun } from "../../src";
 
-describe.skip("run", () => {
+describe("run", () => {
   const yepCodeRun = new YepCodeRun();
   const options = {
     removeOnDone: true,
