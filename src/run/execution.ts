@@ -131,9 +131,15 @@ export class Execution {
   private async _poll(): Promise<void> {
     this.isPolling = true;
     this.pollPromise = (async () => {
-      const executionData = await this.yepCodeApi.getExecution(
-        this.executionId
-      );
+      let executionData;
+      try {
+        executionData = await this.yepCodeApi.getExecution(this.id);
+      } catch (error: any) {
+        if (error.status === 404) {
+          throw new Error(`Execution not found: ${this.id}`);
+        }
+        throw error;
+      }
       this.processId = executionData.processId;
       this.status = executionData.status;
       this.timeline = executionData.timeline?.events?.map((e) => ({
