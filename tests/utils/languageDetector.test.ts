@@ -1,4 +1,4 @@
-import { LanguageDetector } from "../src/utils/languageDetector";
+import { LanguageDetector } from "../../src/utils/languageDetector";
 
 describe("LanguageDetector", () => {
   describe("detectLanguage", () => {
