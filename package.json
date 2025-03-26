@@ -13,8 +13,8 @@
     "access": "public"
   },
   "engines": {
-    "node": "20",
-    "npm": "10"
+    "node": ">=16",
+    "npm": ">=8"
   },
   "exports": {
     ".": "./dist/index.js"
