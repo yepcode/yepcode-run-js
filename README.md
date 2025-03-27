@@ -1,60 +1,54 @@
-# YepCode Run
+![YepCode Run SDK Preview](/readme-assets/cover.png)
 
-A powerful serverless runtime and SDK for executing code in secure sandboxes, with a complete platform for building, managing, and monitoring your script executions.
+<div align="center">
 
-Built on top of [YepCode Cloud](https://yepcode.io/), the enterprise platform that enables seamless script execution for AI agents, data processing, API integrations, and automation workflows.
+[![NPM Version](https://img.shields.io/npm/v/@yepcode/run)](https://www.npmjs.com/package/@yepcode/run)
+[![NPM Downloads](https://img.shields.io/npm/dm/@yepcode/run)](https://www.npmjs.com/package/@yepcode/run)
+<!-- [![License](https://img.shields.io/npm/l/@yepcode/run)](https://www.npmjs.com/package/@yepcode/run)
+[![GitHub Stars](https://img.shields.io/github/stars/yepcode/yepcode-run-js)](https://github.com/yepcode/yepcode-run-js)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/yepcode/yepcode-run-js/build.yml)](https://github.com/yepcode/yepcode-run-js/actions) -->
 
-## Try it Now!
+</div>
 
-Ready to see it in action? Visit our 🎮 [interactive playground](https://yepcode.io/run) (no registration required) where you can:
+## What is YepCode Run?
 
-- Test code execution in real-time
-- Experiment with different languages and packages
-- Learn through hands-on examples
+[YepCode Run](https://yepcode.io/run) is a powerful serverless runtime that enables secure code execution in isolated sandboxes. With our comprehensive SDK and platform, you can effortlessly build, manage, and monitor your script executions. Get started quickly using our [JavaScript SDK](https://www.npmjs.com/package/@yepcode/run) or [Python SDK](https://pypi.org/project/yepcode-run).
 
-## Why YepCode Run?
+Powered by [YepCode Cloud](https://yepcode.io/), our enterprise-grade platform delivers seamless script execution capabilities for AI agents, data processing pipelines, API integrations, and automation workflows. Focus on your code while we handle the infrastructure.
 
-Running arbitrary code in production environments presents significant challenges around security, scalability, and infrastructure management. This is especially critical when dealing with **AI-generated code** from LLMs, where code execution needs to be both secure and reliable at scale and may also need to install external dependencies.
+## Quick start
 
-YepCode Run eliminates these complexities by providing enterprise-grade sandboxing, automatic scaling, and comprehensive security measures out of the box - allowing you to focus on your code instead of infrastructure concerns.
-
-## 🚀 Features
-
-- 🚀 **Instant Code Execution** - Run JavaScript and Python code in secure sandboxes without any setup
-- 🔒 **Enterprise-Ready Platform** - Full suite of tools for building, deploying and monitoring processes
-- 🔄 **Built for Integration** - Perfect for AI agents, data processing, API integrations and automation workflows
-- 📊 **Complete Observability** - Monitor executions, manage credentials, and audit changes in one place
-- 🛠️ **Developer Experience** - Write code in our web IDE or use our API/SDK to integrate with your apps
-- 📦 **Package Freedom** - Use any external dependency with automatic package detection or specify exact versions using `@add-package` annotations
-
-## 🔧 Installation
+### 1. Installation
 
 ```bash
 npm install @yepcode/run
 ```
 
-## 🔑 Get your YepCode API token
+**Requirements:**
+- Node.js >= 18.x
+- TypeScript support included (types are bundled with the package)
 
-You can get your YepCode API token from the [YepCode Cloud](https://cloud.yepcode.io) platform under `Settings` > `API credentials`.
+### 2. Get your YepCode API token
 
-This token may be provided to the `YepCodeRun`, `YepCodeEnv` or `YepCodeApi` constructor, or set in the `YEPCODE_API_TOKEN` environment variable.
+1. Sign up to [YepCode Cloud](https://cloud.yepcode.io)
+2. Get your API token from your workspace under: `Settings` > `API credentials`
+3. Use your API token securely in one of these ways:
 
-```env
-YEPCODE_API_TOKEN=your-api-token
-```
+   ```js
+   // Option 1: Set as environment variable (Recommended)
+   # .env file
+   YEPCODE_API_TOKEN=your_token_here
+   
+   // Option 2: Provide directly to the constructor (Not recommended for production)
+   const runner = new YepCodeRun({ apiToken: 'your_token_here' });
+   ```
 
-## 💻 Usage
-
-### ⚡ Code Execution
-
-The `YepCodeRun` class provides flexible code execution capabilities:
+### 3. Execute your code
 
 ```js
 const { YepCodeRun } = require('@yepcode/run');
 
-const runner = new YepCodeRun({
-  apiToken: 'your-api-token' // We'll try to read it from the YEPCODE_API_TOKEN environment variable
-});
+const runner = new YepCodeRun({});
 
 // Execute code with full options
 const execution = await runner.run(
@@ -79,17 +73,14 @@ await execution.waitForDone();
 const existingExecution = await runner.getExecution('execution-id');
 ```
 
-### 🔐 Environment Variables
+### 4. Manage Environment Variables
 
 You may use environment variables in your code with `process.env` (JavaScript) or `os.getenv` (Python), and you may manage this environment variables in the YepCode platform ([docs here](https://yepcode.io/docs/processes/team-variables)), or using this `YepCodeEnv` class:
 
 ```js
 const { YepCodeEnv } = require('@yepcode/run');
 
-const env = new YepCodeEnv({
-  apiToken: 'your-api-key'
-});
-
+const env = new YepCodeEnv({ apiToken: '****' });
 // Set environment variables
 await env.setEnvVar('API_KEY', 'secret-value');           // Sensitive by default
 await env.setEnvVar('DEBUG', 'true', false);             // Non-sensitive variable
@@ -102,82 +93,206 @@ const variables = await env.getEnvVars();
 await env.delEnvVar('API_KEY');
 ```
 
-### 🌐 Direct API access
+### 5. Direct API access
 
 You can also directly access the full [YepCode API](https://yepcode.io/docs/api) using the `YepCodeApi` class:
 
 ```js
 const { YepCodeApi } = require('@yepcode/run');
 
-const api = new YepCodeApi({
-  apiToken: 'your-api-token'
-});
+const api = new YepCodeApi({ apiToken: '****' });
 
 // Get all processes
 const processes = await api.getProcesses();
 ```
 
-## 📚 SDK API Reference
+## SDK API Reference
 
-### ⚡ YepCodeRun
+### YepCodeRun
 
-#### Methods
+The main class for executing code in YepCode's runtime environment.
 
-- `run(code: string, options?: RunOpts): Promise<Execution>`
-  - `code`: Source code to execute
-  - `options`:
-    - `language`: Programming language ('javascript' or 'python')
-    - `onLog`: Log event handler
-    - `onFinish`: Success completion handler
-    - `onError`: Error handler
-    - `removeOnDone`: Auto-cleanup after execution. If you don't clean up, executions will be available in YepCode Cloud.
-    - `parameters`: Execution parameters (see [docs](https://yepcode.io/docs/processes/input-params) for more information)
-    - `manifest`: Custom process manifest (see [docs](https://yepcode.io/docs/dependencies) for more information)
+#### Constructor
 
-- `getExecution(executionId: string): Promise<Execution>`
-  - Retrieves an existing execution by ID
-
-
-#### `Execution` class properties
-
-- `executionId: string` - Unique identifier for the execution
-- `logs: Array<{ timestamp: string; level: string; message: string }>` - Array of execution logs with timestamps, log levels, and messages
-- `processId?: string` - ID of the associated process
-- `status?: 'CREATED' | 'RUNNING' | 'FINISHED' | 'KILLED' | 'REJECTED' | 'ERROR'` - Current execution status
-- `returnValue?: any` - Execution result (if completed successfully)
-- `error?: string` - Error message (if execution failed)
-- `timeline?: Array<{ status: ExecutionStatus; timestamp: string; explanation?: string }>` - Execution timeline events
-- `parameters?: any` - Execution input parameters
-- `comment?: string` - Execution comment
-
-#### `Execution` class methods
-
-- `isDone(): Promise<boolean>`
-  - Returns whether the execution has completed (successfully or with error)
-
-- `waitForDone(): Promise<void>`
-  - Waits for the execution to complete
-
-- `kill(): Promise<void>`
-  - Terminates the execution
-
-- `rerun(): Promise<Execution>`
-  - Creates a new execution with the same configuration
-
-### 🔐 YepCodeEnv
+```typescript
+constructor(options?: {
+  apiToken?: string;  // Optional if YEPCODE_API_TOKEN env var is set
+})
+```
 
 #### Methods
 
-- `getEnvVars(): Promise<EnvVar[]>`
-  - Returns all environment variables
+##### `run(code: string, options?: RunOpts): Promise<Execution>`
 
-- `setEnvVar(key: string, value: string, isSensitive?: boolean): Promise<void>`
-  - Sets an environment variable
-  - `isSensitive`: Marks variable as sensitive (defaults to true)
+Executes code in YepCode's runtime environment.
 
-- `delEnvVar(key: string): Promise<void>`
-  - Deletes an environment variable
+**Parameters:**
+- `code`: Source code to execute (string)
+- `options`: Execution options (optional)
+  ```typescript
+  interface RunOpts {
+    language?: 'javascript' | 'python';  // Auto-detected if not specified
+    onLog?: (log: LogEvent) => void;     // Log event handler
+    onFinish?: (returnValue: any) => void; // Success completion handler
+    onError?: (error: Error) => void;    // Error handler
+    removeOnDone?: boolean;              // Auto-cleanup after execution
+    parameters?: any;                    // Execution parameters
+    manifest?: ProcessManifest;          // Custom process manifest
+    timeout?: number;                    // Execution timeout in ms
+  }
 
-## 📄 License
+  interface LogEvent {
+    timestamp: string;
+    level: 'info' | 'warn' | 'error' | 'debug';
+    message: string;
+  }
+  ```
 
-All rights reserved by YepCode. This package is part of the YepCode Platform and is subject to the [YepCode Terms of Service](https://yepcode.io/terms-of-use).
+**Returns:** Promise<Execution>
+
+##### `getExecution(executionId: string): Promise<Execution>`
+
+Retrieves an existing execution by ID.
+
+**Parameters:**
+- `executionId`: Unique identifier for the execution
+
+**Returns:** Promise<Execution>
+
+#### `Execution` class
+
+Represents a code execution instance.
+
+**Properties:**
+```typescript
+interface Execution {
+  id: string;                           // Unique identifier
+  logs: LogEvent[];                     // Array of execution logs
+  processId?: string;                   // ID of the associated process
+  status?: ExecutionStatus;             // Current execution status
+  returnValue?: any;                    // Execution result
+  error?: string;                       // Error message
+  timeline?: TimelineEvent[];           // Execution timeline events
+  parameters?: any;                     // Execution input parameters
+  comment?: string;                     // Execution comment
+}
+
+type ExecutionStatus = 
+  | 'CREATED' 
+  | 'RUNNING' 
+  | 'FINISHED' 
+  | 'KILLED' 
+  | 'REJECTED' 
+  | 'ERROR';
+
+interface TimelineEvent {
+  status: ExecutionStatus;
+  timestamp: string;
+  explanation?: string;
+}
+```
+
+**Methods:**
+
+###### `isDone(): Promise<boolean>`
+Returns whether the execution has completed.
+
+**Returns:** Promise<boolean>
+
+###### `waitForDone(options?: { timeout?: number }): Promise<void>`
+Waits for the execution to complete.
+
+**Parameters:**
+- `options`: Optional timeout configuration
+  ```typescript
+  interface WaitOptions {
+    timeout?: number;  // Timeout in milliseconds
+  }
+  ```
+
+**Returns:** Promise<void>
+
+###### `kill(): Promise<void>`
+Terminates the execution.
+
+**Returns:** Promise<void>
+
+###### `rerun(): Promise<Execution>`
+Creates a new execution with the same configuration.
+
+**Returns:** Promise<Execution>
+
+### YepCodeEnv
+
+Manages environment variables for your YepCode workspace.
+
+#### Constructor
+
+```typescript
+constructor(options?: {
+  apiToken?: string;  // Optional if YEPCODE_API_TOKEN env var is set
+})
+```
+
+#### Methods
+
+##### `getEnvVars(): Promise<EnvVar[]>`
+Returns all environment variables.
+
+**Returns:** Promise<EnvVar[]>
+```typescript
+interface EnvVar {
+  key: string;
+  value: string;
+  isSensitive: boolean;
+}
+```
+
+##### `setEnvVar(key: string, value: string, isSensitive?: boolean): Promise<void>`
+Sets an environment variable.
+
+**Parameters:**
+- `key`: Variable name
+- `value`: Variable value
+- `isSensitive`: Whether the variable contains sensitive data (defaults to true)
+
+**Returns:** Promise<void>
+
+##### `delEnvVar(key: string): Promise<void>`
+Deletes an environment variable.
+
+**Parameters:**
+- `key`: Variable name to delete
+
+**Returns:** Promise<void>
+
+### YepCodeApi
+
+Provides direct access to the YepCode API.
+
+#### Constructor
+
+```typescript
+constructor(options?: {
+  apiToken?: string;  // Optional if YEPCODE_API_TOKEN env var is set
+})
+```
+
+#### Methods
+
+##### `getProcesses(): Promise<Process[]>`
+Returns all available processes.
+
+**Returns:** Promise<Process[]>
+```typescript
+interface Process {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+}
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
