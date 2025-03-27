@@ -1,4 +1,4 @@
-name: tags-v
+name: Release
 on:
   push:
     tags:
@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     container:
-      image: node:20.12-slim
+      image: node:22-slim
     steps:
       - uses: actions/checkout@v4
       - name: Cache node
@@ -21,7 +21,6 @@ jobs:
       - name: Build
         run: |-
           npm install
-          chmod -R 0777 /__w/yepcode-run-js
           npm run build
       - name: Deploy packages to npmjs.org
         run: |-
@@ -33,3 +32,16 @@ jobs:
           name: deploy
           path: |-
             dist/**
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: false
+          prerelease: false

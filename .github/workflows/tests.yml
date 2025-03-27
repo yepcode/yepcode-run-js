@@ -1,4 +1,4 @@
-name: Test YepCode Run
+name: NPM Tests
 on:
   workflow_call:
   workflow_dispatch:
