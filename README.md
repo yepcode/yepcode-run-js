@@ -4,9 +4,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/@yepcode/run)](https://www.npmjs.com/package/@yepcode/run)
 [![NPM Downloads](https://img.shields.io/npm/dm/@yepcode/run)](https://www.npmjs.com/package/@yepcode/run)
-<!-- [![License](https://img.shields.io/npm/l/@yepcode/run)](https://www.npmjs.com/package/@yepcode/run)
-[![GitHub Stars](https://img.shields.io/github/stars/yepcode/yepcode-run-js)](https://github.com/yepcode/yepcode-run-js)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/yepcode/yepcode-run-js/build.yml)](https://github.com/yepcode/yepcode-run-js/actions) -->
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/yepcode/yepcode-run-js/ci.yml)](https://github.com/yepcode/yepcode-run-js/actions)
 
 </div>
 
