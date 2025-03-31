@@ -94,6 +94,13 @@ export class YepCodeApi {
     this.initTeamIdByAccessToken();
   }
 
+  getClientId(): string {
+    if (!this.clientId) {
+      throw new Error("Client ID is not set");
+    }
+    return this.clientId;
+  }
+
   private initTeamIdByAccessToken(): void {
     if (!this.accessToken) {
       return;

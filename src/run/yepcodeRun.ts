@@ -14,6 +14,10 @@ export class YepCodeRun {
     this.PROCESS_NAME_PREFIX = "yepcode-run-";
   }
 
+  getClientId(): string {
+    return this.yepCodeApi.getClientId();
+  }
+
   private _getProcessSlug(hash: string): string {
     return `${this.PROCESS_NAME_PREFIX}${hash}`;
   }

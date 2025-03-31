@@ -13,6 +13,10 @@ export class YepCodeEnv {
     this.yepCodeApi = YepCodeApiManager.getInstance(config);
   }
 
+  getClientId(): string {
+    return this.yepCodeApi.getClientId();
+  }
+
   private async _getVariable(key: string): Promise<TeamVariable | undefined> {
     const variables = await this._getVariables();
     return variables.find((v) => v.key === key);
