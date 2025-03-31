@@ -53,19 +53,34 @@ export class YepCodeApi {
     }
 
     if (finalConfig.apiToken) {
-      try {
+      if (finalConfig.apiToken.startsWith("sk-")) {
         const decodedToken = Buffer.from(
-          finalConfig.apiToken,
+          finalConfig.apiToken.substring(3),
           "base64"
         ).toString();
-        const { clientId, clientSecret } = JSON.parse(decodedToken);
+
+        const [clientId, clientSecret] = decodedToken.split(":");
         if (!clientId || !clientSecret) {
-          throw new Error();
+          throw new Error("Invalid apiToken format: " + finalConfig.apiToken);
         }
         finalConfig.clientId = clientId;
         finalConfig.clientSecret = clientSecret;
-      } catch (error) {
-        throw new Error("Invalid apiToken format: " + finalConfig.apiToken);
+      } else {
+        // This is a legacy apiToken format
+        try {
+          const decodedToken = Buffer.from(
+            finalConfig.apiToken,
+            "base64"
+          ).toString();
+          const { clientId, clientSecret } = JSON.parse(decodedToken);
+          if (!clientId || !clientSecret) {
+            throw new Error();
+          }
+          finalConfig.clientId = clientId;
+          finalConfig.clientSecret = clientSecret;
+        } catch (error) {
+          throw new Error("Invalid apiToken format: " + finalConfig.apiToken);
+        }
       }
     }
 
