@@ -10,216 +10,73 @@ export interface YepCodeApiConfig {
 }
 
 export interface CreateProcessInput {
-  /**
-   * example:
-   * My Process
-   */
   name: string;
-  /**
-   * example:
-   * My Process Description
-   */
   description?: string;
-  /**
-   * example:
-   * # My Process Readme
-   */
   readme?: string;
   manifest?: ProcessManifestInput;
   settings?: SettingsInput;
   script?: CreateScriptInput;
-  /**
-   * example:
-   * [
-   *   "my-tag",
-   *   "my-second-tag"
-   * ]
-   */
   tags?: string[];
 }
 export interface CreateScriptInput {
-  /**
-   * example:
-   * JAVASCRIPT
-   */
   programmingLanguage?: string;
-  /**
-   * example:
-   * const {\n  context: { parameters },\n} = yepcode;\n\nconst message = `Hello ${parameters.name}`\n\nconsole.log(message);\n\nreturn {\n  theMessage: message\n}
-   */
   sourceCode?: string;
-  /**
-   * example:
-   * {"title":"Simple form sample","description":"This is a simple sample form specification","type":"object","properties":{"oneStringField":{"title":"One string field","type":"string"},"oneIntegerField":{"title":"One integer field with range","type":"integer"},"oneBooleanField":{"title":"One boolean field","type":"boolean"}},"required":["oneStringField"]}
-   */
   parametersSchema?: string;
 }
 export interface CreateTeamVariableInput {
-  /**
-   * example:
-   * MY_VARIABLE
-   */
   key: string;
-  /**
-   * example:
-   * my-variable-value
-   */
   value?: string;
-  /**
-   * example:
-   * true
-   */
   isSensitive?: boolean;
 }
 export interface DependenciesConfig {
-  /**
-   * Indicates if the dependencies are scoped to this specific process
-   * example:
-   * true
-   */
   scopedToProcess?: boolean;
-  /**
-   * Enables auto dependency detection from source code. If enabled, newly detected dependencies will be added while preserving existing ones.
-   * example:
-   * true
-   */
   autoDetect?: boolean;
 }
 export interface DependenciesConfigInput {
-  /**
-   * Indicates if the dependencies are scoped to this specific process
-   * example:
-   * true
-   */
   scopedToProcess?: boolean;
-  /**
-   * Enables auto dependency detection from source code. If enabled, newly detected dependencies will be added while preserving existing ones.
-   * example:
-   * true
-   */
   autoDetect?: boolean;
 }
 export interface ExecuteProcessInput {
-  /**
-   * example:
-   * {"name":"YepCode"}
-   */
   parameters?: string;
-  /**
-   * A version tag or an alias of the version
-   * example:
-   * ["v1.0.0","production"]
-   */
   tag?: string;
-  /**
-   * example:
-   * YepCode execution test
-   */
   comment?: string;
   settings?: ExecuteProcessSettingsInput;
 }
 export interface ExecuteProcessSettingsInput {
-  /**
-   * Agent pool where to execute
-   * example:
-   * aws-eu-west-1
-   */
   agentPoolSlug?: string;
-  /**
-   * URL to receive execution results upon completion (success or failure)
-   * example:
-   * https://my-callback-url.com/executions/results
-   */
   callbackUrl?: string;
 }
 export interface Execution {
-  /**
-   * example:
-   * 138f7d70-7d13-430f-9f15-a66de3ce1892
-   */
   id: string;
-  /**
-   * example:
-   * a4f0c6fd-0da8-4769-8ebb-6c0c030fdfb8
-   */
   processId: string;
-  /**
-   * example:
-   * 74c679c4-4df8-4a9c-9d06-4d62ab69ed49
-   */
   scheduledId?: string;
   status: "CREATED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
   timeline?: ExecutionTimeline;
-  /**
-   * example:
-   * {
-   *   "name": "YepCode"
-   * }
-   */
   parameters?: {
     [name: string]: {
       [key: string]: any;
     };
   };
-  /**
-   * example:
-   * jane-doe
-   */
-  createdBy?: string;
-  createdAt?: string; // date-time
-  /**
-   * example:
-   * Say hello to YepCode
-   */
   comment?: string;
-  /**
-   * example:
-   * Hello YepCode!
-   */
   returnValue?: string;
   settings?: ExecutionSettings;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
 }
-/**
- * Execution ID
- */
 export interface ExecutionId {
   executionId: string;
 }
 export interface ExecutionLogsPaginatedResult {
-  /**
-   * example:
-   * false
-   */
   hasNextPage?: boolean;
-  /**
-   * example:
-   * 0
-   */
-  page?: number; // int32
-  /**
-   * example:
-   * 10
-   */
-  limit?: number; // int32
-  /**
-   * example:
-   * 1
-   */
-  total?: number; // int64
+  page?: number;
+  limit?: number;
+  total?: number;
   data?: LogEntry[];
 }
 export interface ExecutionSettings {
-  /**
-   * Timeout in milliseconds
-   * example:
-   * 10000
-   */
-  timeout?: number; // int64
-  /**
-   * Agent pool where the execution was executed
-   * example:
-   * aws-eu-west-1
-   */
+  timeout?: number;
   agentPoolSlug?: string;
 }
 export interface ExecutionTimeline {
@@ -228,160 +85,61 @@ export interface ExecutionTimeline {
 }
 export interface ExecutionTimelineEvent {
   status: "CREATED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
-  timestamp: string; // date-time
+  timestamp: string;
   explanation?: string;
 }
 export interface ExecutionsPaginatedResult {
-  /**
-   * example:
-   * false
-   */
   hasNextPage?: boolean;
-  /**
-   * example:
-   * 0
-   */
-  page?: number; // int32
-  /**
-   * example:
-   * 10
-   */
-  limit?: number; // int32
-  /**
-   * example:
-   * 1
-   */
-  total?: number; // int64
+  page?: number;
+  limit?: number;
+  total?: number;
   data?: Execution[];
 }
 export interface FormsConfigInput {
-  /**
-   * example:
-   * true
-   */
   enabled?: boolean;
 }
 export interface LogEntry {
-  timestamp: string; // date-time
-  /**
-   * example:
-   * INFO
-   */
+  timestamp: string;
   level: string;
-  /**
-   * example:
-   * Hello YepCode!
-   */
   message: string;
 }
 export interface Process {
-  /**
-   * example:
-   * a4f0c6fd-0da8-4769-8ebb-6c0c030fdfb8
-   */
   id: string;
-  /**
-   * example:
-   * Hello World!
-   */
   name: string;
-  /**
-   * example:
-   * hello-world
-   */
   slug: string;
-  /**
-   * example:
-   * A sample process to show how YepCode works
-   */
   description?: string;
-  /**
-   * example:
-   * # Hello World!
-   */
   readme?: string;
   manifest?: ProcessManifest;
-  /**
-   * example:
-   * jane-doe
-   */
-  createdBy?: string;
-  createdAt?: string; // date-time
-  /**
-   * example:
-   * jane-doe
-   */
-  updatedBy?: string;
-  updatedAt?: string; // date-time
-  /**
-   * example:
-   * {
-   *   "name": {
-   *     "type": "string"
-   *   }
-   * }
-   */
   parametersSchema?: {
     [name: string]: {
       [key: string]: any;
     };
   };
   programmingLanguage?: "JAVASCRIPT" | "PYTHON";
-  /**
-   * example:
-   * const {\n  context: { parameters },\n} = yepcode;\n\nconst message = `Hello ${parameters.name}`\n\nconsole.log(message);\n\nreturn {\n  theMessage: message\n}
-   */
   sourceCode?: string;
   webhook?: ProcessWebhook;
   settings?: ProcessSettings;
-  /**
-   * example:
-   * [
-   *   "my-tag",
-   *   "my-second-tag"
-   * ]
-   */
   tags?: string[];
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
 }
 export interface ProcessFormsConfig {
-  /**
-   * example:
-   * true
-   */
   enabled?: boolean;
 }
 export interface ProcessManifest {
-  /**
-   * example:
-   * {
-   *   "@yepcode-sdk": "1.0.0"
-   * }
-   */
   dependencies?: {
     [name: string]: string;
   };
 }
 export interface ProcessManifestInput {
-  /**
-   * example:
-   * {
-   *   "@yepcode-sdk": "1.0.0"
-   * }
-   */
   dependencies?: {
     [name: string]: string;
   };
 }
 export interface ProcessPublicationConfig {
-  /**
-   * example:
-   * true
-   */
   enabled?: boolean;
-  /**
-   * example:
-   * my-public-token
-   */
   token?: string;
 }
 export interface ProcessSettings {
@@ -390,156 +148,57 @@ export interface ProcessSettings {
   dependencies?: DependenciesConfig;
 }
 export interface ProcessWebhook {
-  /**
-   * example:
-   * true
-   */
   enabled?: boolean;
-  /**
-   * example:
-   * username
-   */
   username?: string;
-  /**
-   * example:
-   * password
-   */
   password?: string;
 }
 export interface ProcessesPaginatedResult {
-  /**
-   * example:
-   * false
-   */
   hasNextPage?: boolean;
-  /**
-   * example:
-   * 0
-   */
-  page?: number; // int32
-  /**
-   * example:
-   * 10
-   */
-  limit?: number; // int32
-  /**
-   * example:
-   * 1
-   */
-  total?: number; // int64
+  page?: number;
+  limit?: number;
+
+  total?: number;
   data?: Process[];
 }
 export interface PublicationConfigInput {
-  /**
-   * example:
-   * true
-   */
   enabled?: boolean;
-  /**
-   * example:
-   * my-public-token
-   */
   token?: string;
 }
 export interface Schedule {
-  /**
-   * example:
-   * 138f7d70-7d13-430f-9f15-a66de3ce1852
-   */
   id: string;
-  /**
-   * example:
-   * jane-doe
-   */
-  createdBy?: string;
-  createdAt?: string; // date-time
-  /**
-   * example:
-   * jane-doe
-   */
-  updatedBy?: string;
-  updatedAt?: string; // date-time
-  /**
-   * example:
-   * a4f0c6fd-0da8-4769-8ebb-6c0c030fdfb8
-   */
   processId: string;
-  /**
-   * example:
-   * Daily execution
-   */
   comment?: string;
-  /**
-   * example:
-   * {
-   *   "message": "Hello YepCode!"
-   * }
-   */
   parameters?: {
     [name: string]: {
       [key: string]: any;
     };
   };
-  /**
-   * example:
-   * false
-   */
   paused?: boolean;
   type?: "PERIODIC" | "ONE_TIME";
-  /**
-   * example:
-   * 0 0 6 * * SUN
-   */
   cron?: string;
-  dateTime?: string; // date-time
+  dateTime?: string;
   settings?: ScheduleSettings;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
 }
 export interface ScheduleSettings {
   allowConcurrentExecutions?: boolean;
-  /**
-   * example:
-   * [
-   *   "aws-eu-west-1",
-   *   "azure-us-east-1"
-   * ]
-   */
   agentPoolSlugs?: string[];
 }
 export interface ScheduledProcessInput {
-  /**
-   * example:
-   * 0 0 6 * * SUN
-   */
   cron?: string;
-  dateTime?: string; // date-time
-  /**
-   * example:
-   * true
-   */
+  dateTime?: string;
   allowConcurrentExecutions?: boolean;
   input?: ExecuteProcessInput;
 }
 export interface SchedulesPaginatedResult {
-  /**
-   * example:
-   * false
-   */
   hasNextPage?: boolean;
-  /**
-   * example:
-   * 0
-   */
-  page?: number; // int32
-  /**
-   * example:
-   * 10
-   */
-  limit?: number; // int32
-  /**
-   * example:
-   * 1
-   */
-  total?: number; // int64
+  page?: number;
+  limit?: number;
+
+  total?: number;
   data?: Schedule[];
 }
 export interface SettingsInput {
@@ -548,128 +207,176 @@ export interface SettingsInput {
   dependencies?: DependenciesConfigInput;
 }
 export interface TeamVariable {
-  /**
-   * example:
-   * 138f7d70-7d13-430f-9f15-a66de3ce1852
-   */
   id: string;
-  /**
-   * example:
-   * MY_VARIABLE
-   */
   key: string;
-  /**
-   * example:
-   * MY_VALUE
-   */
   value?: string;
-  /**
-   * example:
-   * true
-   */
   isSensitive?: boolean;
-  /**
-   * example:
-   * jane-doe
-   */
   createdBy?: string;
-  createdAt?: string; // date-time
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
 }
 export interface TeamVariablesPaginatedResult {
-  /**
-   * example:
-   * false
-   */
   hasNextPage?: boolean;
-  /**
-   * example:
-   * 0
-   */
-  page?: number; // int32
-  /**
-   * example:
-   * 10
-   */
-  limit?: number; // int32
-  /**
-   * example:
-   * 1
-   */
-  total?: number; // int64
+  page?: number;
+  limit?: number;
+
+  total?: number;
   data?: TeamVariable[];
 }
 export interface UpdateProcessInput {
-  /**
-   * example:
-   * My Process
-   */
   name: string;
-  /**
-   * example:
-   * my-process
-   */
   slug: string;
-  /**
-   * example:
-   * My Process Description
-   */
   description?: string;
-  /**
-   * example:
-   * # My Process Readme
-   */
   readme?: string;
   script?: UpdateScriptInput;
   webhook?: WebhookInput;
   settings?: SettingsInput;
   manifest?: ProcessManifestInput;
-  /**
-   * example:
-   * [
-   *   "my-tag",
-   *   "my-second-tag"
-   * ]
-   */
   tags?: string[];
 }
 export interface UpdateScriptInput {
-  /**
-   * example:
-   * const {\n  context: { parameters },\n} = yepcode;\n\nconst message = `Hello ${parameters.name}`\n\nconsole.log(message);\n\nreturn {\n  theMessage: message\n}
-   */
   sourceCode?: string;
-  /**
-   * example:
-   * {"title":"Simple form sample","description":"This is a simple sample form specification","type":"object","properties":{"oneStringField":{"title":"One string field","type":"string"},"oneIntegerField":{"title":"One integer field with range","type":"integer"},"oneBooleanField":{"title":"One boolean field","type":"boolean"}},"required":["oneStringField"]}
-   */
   parametersSchema?: string;
 }
 export interface UpdateTeamVariableInput {
-  /**
-   * example:
-   * MY_VARIABLE
-   */
   key: string;
-  /**
-   * example:
-   * my-variable-value
-   */
   value?: string;
 }
 export interface WebhookInput {
-  /**
-   * example:
-   * true
-   */
   enabled?: boolean;
-  /**
-   * example:
-   * username
-   */
   username?: string;
-  /**
-   * example:
-   * password
-   */
   password?: string;
+}
+
+export interface VersionedProcess {
+  id: string;
+  programmingLanguage: "JAVASCRIPT" | "PYTHON";
+  sourceCode: string;
+  parametersSchema: string;
+  readme: string;
+  comment?: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+}
+
+export interface PublishProcessInput {
+  tag: string;
+  comment?: string;
+}
+
+export interface VersionedProcessesPaginatedResult {
+  hasNextPage?: boolean;
+  page?: number;
+  limit?: number;
+
+  total?: number;
+  data?: VersionedProcess[];
+}
+
+export interface VersionedProcessAlias {
+  id: string;
+  name: string;
+  versionId: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+}
+
+export interface VersionedProcessAliasInput {
+  name: string;
+  versionId: string;
+}
+
+export interface VersionedProcessAliasesPaginatedResult {
+  hasNextPage?: boolean;
+  page?: number;
+  limit?: number;
+  total?: number;
+  data?: VersionedProcessAlias[];
+}
+
+export interface Module {
+  id: string;
+  name: string;
+  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  sourceCode?: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+}
+
+export interface CreateModuleInput {
+  name: string;
+  script?: {
+    programmingLanguage?: string;
+    sourceCode?: string;
+  };
+}
+
+export interface UpdateModuleInput {
+  name?: string;
+  script?: {
+    programmingLanguage?: string;
+    sourceCode?: string;
+  };
+}
+
+export interface ModulesPaginatedResult {
+  hasNextPage?: boolean;
+  page?: number;
+  limit?: number;
+  total?: number;
+  data?: Module[];
+}
+
+export interface VersionedModule {
+  id: string;
+  programmingLanguage: "JAVASCRIPT" | "PYTHON";
+  sourceCode: string;
+  comment?: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+}
+
+export interface PublishModuleInput {
+  tag: string;
+  comment?: string;
+}
+
+export interface VersionedModulesPaginatedResult {
+  hasNextPage?: boolean;
+  page?: number;
+  limit?: number;
+  total?: number;
+  data?: VersionedModule[];
+}
+
+export interface VersionedModuleAlias {
+  id: string;
+  name: string;
+  versionId: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+}
+
+export interface VersionedModuleAliasInput {
+  name: string;
+  versionId: string;
+}
+
+export interface VersionedModuleAliasesPaginatedResult {
+  hasNextPage?: boolean;
+  page?: number;
+  limit?: number;
+  total?: number;
+  data?: VersionedModuleAlias[];
 }

@@ -14,6 +14,22 @@ import {
   CreateTeamVariableInput,
   UpdateTeamVariableInput,
   TeamVariablesPaginatedResult,
+  VersionedProcess,
+  PublishProcessInput,
+  VersionedProcessesPaginatedResult,
+  VersionedProcessAlias,
+  VersionedProcessAliasInput,
+  VersionedProcessAliasesPaginatedResult,
+  Module,
+  CreateModuleInput,
+  UpdateModuleInput,
+  ModulesPaginatedResult,
+  VersionedModule,
+  PublishModuleInput,
+  VersionedModulesPaginatedResult,
+  VersionedModuleAlias,
+  VersionedModuleAliasInput,
+  VersionedModuleAliasesPaginatedResult,
 } from "./types";
 
 export class YepCodeApiError extends Error {
@@ -157,6 +173,24 @@ export class YepCodeApi {
     }
   }
 
+  private sanitizeDateParam(date?: Date | string): string | undefined {
+    if (!date) {
+      return undefined;
+    }
+    if (date instanceof Date) {
+      return date.toISOString().split(".")[0];
+    }
+    if (
+      typeof date === "string" &&
+      !date.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)
+    ) {
+      throw new Error(
+        "Invalid date format. It must be a valid ISO 8601 date (ie: 2025-01-01T00:00:00)"
+      );
+    }
+    return date as string;
+  }
+
   private async request<T>(
     method: string,
     endpoint: string,
@@ -239,6 +273,41 @@ export class YepCodeApi {
 
   async deleteProcess(processIdentifier: string): Promise<void> {
     return this.request("DELETE", `/processes/${processIdentifier}`);
+  }
+
+  async getProcessVersions(
+    processId: string,
+    params: {
+      page?: number;
+      limit?: number;
+    } = {}
+  ): Promise<VersionedProcessesPaginatedResult> {
+    return this.request("GET", `/processes/${processId}/versions`, { params });
+  }
+
+  async publishProcessVersion(
+    processId: string,
+    data: PublishProcessInput
+  ): Promise<VersionedProcess> {
+    return this.request("POST", `/processes/${processId}/versions`, { data });
+  }
+
+  async getProcessVersionAliases(
+    processId: string,
+    params: {
+      versionId?: string;
+      page?: number;
+      limit?: number;
+    } = {}
+  ): Promise<VersionedProcessAliasesPaginatedResult> {
+    return this.request("GET", `/processes/${processId}/aliases`, { params });
+  }
+
+  async createProcessVersionAlias(
+    processId: string,
+    data: VersionedProcessAliasInput
+  ): Promise<VersionedProcessAlias> {
+    return this.request("POST", `/processes/${processId}/aliases`, { data });
   }
 
   async getProcesses(
@@ -412,21 +481,68 @@ export class YepCodeApi {
     return this.request("DELETE", `/variables/${id}`);
   }
 
-  private sanitizeDateParam(date?: Date | string): string | undefined {
-    if (!date) {
-      return undefined;
-    }
-    if (date instanceof Date) {
-      return date.toISOString().split(".")[0];
-    }
-    if (
-      typeof date === "string" &&
-      !date.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)
-    ) {
-      throw new Error(
-        "Invalid date format. It must be a valid ISO 8601 date (ie: 2025-01-01T00:00:00)"
-      );
-    }
-    return date as string;
+  async getModules(
+    params: {
+      keywords?: string;
+      tags?: string[];
+      page?: number;
+      limit?: number;
+    } = {}
+  ): Promise<ModulesPaginatedResult> {
+    return this.request("GET", "/modules", { params });
+  }
+
+  async createModule(data: CreateModuleInput): Promise<Module> {
+    return this.request("POST", "/modules", { data });
+  }
+
+  async getModule(id: string): Promise<Module> {
+    return this.request("GET", `/modules/${id}`);
+  }
+
+  async updateModule(
+    moduleId: string,
+    data: UpdateModuleInput
+  ): Promise<Module> {
+    return this.request("PATCH", `/modules/${moduleId}`, { data });
+  }
+
+  async deleteModule(moduleId: string): Promise<void> {
+    return this.request("DELETE", `/modules/${moduleId}`);
+  }
+
+  async getModuleVersions(
+    moduleId: string,
+    params: {
+      page?: number;
+      limit?: number;
+    } = {}
+  ): Promise<VersionedModulesPaginatedResult> {
+    return this.request("GET", `/modules/${moduleId}/versions`, { params });
+  }
+
+  async publishModuleVersion(
+    moduleId: string,
+    data: PublishModuleInput
+  ): Promise<VersionedModule> {
+    return this.request("POST", `/modules/${moduleId}/versions`, { data });
+  }
+
+  async getModuleVersionAliases(
+    moduleId: string,
+    params: {
+      versionId?: string;
+      page?: number;
+      limit?: number;
+    } = {}
+  ): Promise<VersionedModuleAliasesPaginatedResult> {
+    return this.request("GET", `/modules/${moduleId}/aliases`, { params });
+  }
+
+  async createModuleVersionAlias(
+    moduleId: string,
+    data: VersionedModuleAliasInput
+  ): Promise<VersionedModuleAlias> {
+    return this.request("POST", `/modules/${moduleId}/aliases`, { data });
   }
 }
