@@ -17,6 +17,10 @@ export class YepCodeEnv {
     return this.yepCodeApi.getClientId();
   }
 
+  getTeamId(): string {
+    return this.yepCodeApi.getTeamId();
+  }
+
   private async _getVariable(key: string): Promise<TeamVariable | undefined> {
     const variables = await this._getVariables();
     return variables.find((v) => v.key === key);

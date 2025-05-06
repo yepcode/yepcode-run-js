@@ -18,6 +18,10 @@ export class YepCodeRun {
     return this.yepCodeApi.getClientId();
   }
 
+  getTeamId(): string {
+    return this.yepCodeApi.getTeamId();
+  }
+
   private _getProcessSlug(hash: string): string {
     return `${this.PROCESS_NAME_PREFIX}${hash}`;
   }

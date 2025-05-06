@@ -101,6 +101,13 @@ export class YepCodeApi {
     return this.clientId;
   }
 
+  getTeamId(): string {
+    if (!this.teamId) {
+      throw new Error("Team ID is not set");
+    }
+    return this.teamId;
+  }
+
   private initTeamIdByAccessToken(): void {
     if (!this.accessToken) {
       return;
