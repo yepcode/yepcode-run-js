@@ -136,6 +136,10 @@ export class YepCodeApi {
       decodedPayload.groups &&
       decodedPayload.groups.filter((group: string) => group !== "sandbox")[0];
 
+    if (!this.clientId) {
+      this.clientId = decodedPayload.client_id;
+    }
+
     if (!this.teamId) {
       throw new Error("No teamId found in the access token");
     }
