@@ -107,19 +107,9 @@ export class YepCodeApi {
     this.teamId = finalConfig.teamId;
     this.accessToken = finalConfig.accessToken;
     this.timeout = finalConfig.timeout;
-    if (!this.clientId && this.accessToken) {
-      this.clientId = this.clientIdFromAccessToken();
+    if (!this.teamId) {
+      this.initTeamId();
     }
-    if (!this.teamId && this.clientId) {
-      this.teamId = this.teamIdFromClientId();
-    }
-  }
-
-  getClientId(): string {
-    if (!this.clientId) {
-      throw new Error("Client ID is not set");
-    }
-    return this.clientId;
   }
 
   getTeamId(): string {
@@ -129,28 +119,25 @@ export class YepCodeApi {
     return this.teamId;
   }
 
-  private clientIdFromAccessToken(): string {
-    if (!this.accessToken) {
-      throw new Error("Access token is not set");
+  private initTeamId(): void {
+    if (this.clientId) {
+      const match = this.clientId.match(/^sa-(.*)-[a-z0-9]{8}$/);
+      if (match) {
+        this.teamId = match[1];
+      }
     }
-    const [, payload] = this.accessToken.split(".");
-    const decodedPayload = JSON.parse(
-      Buffer.from(payload, "base64").toString()
-    );
-    return decodedPayload.client_id;
-  }
-
-  private teamIdFromClientId(): string {
-    if (!this.clientId) {
-      throw new Error("Client ID is not set");
-    }
-    const match = this.clientId.match(/^sa-(.*)-[a-z0-9]{8}$/);
-    if (!match) {
-      throw new Error(
-        "Client ID is not valid. It must be in the format sa-<teamId>-<8randomCharsOrDigits>"
+    if (!this.teamId && this.accessToken) {
+      const [, payload] = this.accessToken.split(".");
+      const decodedPayload = JSON.parse(
+        Buffer.from(payload, "base64").toString()
       );
+      this.teamId =
+        decodedPayload.groups &&
+        decodedPayload.groups.filter((group: string) => group !== "sandbox")[0];
     }
-    return match[1];
+    if (!this.teamId) {
+      throw new Error("Team ID is not set");
+    }
   }
 
   private getBaseURL(): string {

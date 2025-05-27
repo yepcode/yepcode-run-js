@@ -13,10 +13,6 @@ export class YepCodeEnv {
     this.yepCodeApi = YepCodeApiManager.getInstance(config);
   }
 
-  getClientId(): string {
-    return this.yepCodeApi.getClientId();
-  }
-
   getTeamId(): string {
     return this.yepCodeApi.getTeamId();
   }

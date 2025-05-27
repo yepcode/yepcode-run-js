@@ -14,10 +14,6 @@ export class YepCodeRun {
     this.PROCESS_NAME_PREFIX = "yepcode-run-";
   }
 
-  getClientId(): string {
-    return this.yepCodeApi.getClientId();
-  }
-
   getTeamId(): string {
     return this.yepCodeApi.getTeamId();
   }
