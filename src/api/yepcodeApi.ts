@@ -107,7 +107,12 @@ export class YepCodeApi {
     this.teamId = finalConfig.teamId;
     this.accessToken = finalConfig.accessToken;
     this.timeout = finalConfig.timeout;
-    this.initTeamIdByAccessToken();
+    if (!this.clientId && this.accessToken) {
+      this.clientId = this.clientIdFromAccessToken();
+    }
+    if (!this.teamId && this.clientId) {
+      this.teamId = this.teamIdFromClientId();
+    }
   }
 
   getClientId(): string {
@@ -124,25 +129,28 @@ export class YepCodeApi {
     return this.teamId;
   }
 
-  private initTeamIdByAccessToken(): void {
+  private clientIdFromAccessToken(): string {
     if (!this.accessToken) {
-      return;
+      throw new Error("Access token is not set");
     }
     const [, payload] = this.accessToken.split(".");
     const decodedPayload = JSON.parse(
       Buffer.from(payload, "base64").toString()
     );
-    this.teamId =
-      decodedPayload.groups &&
-      decodedPayload.groups.filter((group: string) => group !== "sandbox")[0];
+    return decodedPayload.client_id;
+  }
 
+  private teamIdFromClientId(): string {
     if (!this.clientId) {
-      this.clientId = decodedPayload.client_id;
+      throw new Error("Client ID is not set");
     }
-
-    if (!this.teamId) {
-      throw new Error("No teamId found in the access token");
+    const match = this.clientId.match(/^sa-(.*)-[a-z0-9]{8}$/);
+    if (!match) {
+      throw new Error(
+        "Client ID is not valid. It must be in the format sa-<teamId>-<8randomCharsOrDigits>"
+      );
     }
+    return match[1];
   }
 
   private getBaseURL(): string {
@@ -170,7 +178,6 @@ export class YepCodeApi {
       if (!this.accessToken) {
         throw new Error("No access token received from server");
       }
-      this.initTeamIdByAccessToken();
       return this.accessToken;
     } catch (error: any) {
       throw new Error(`Authentication failed: ${error.message}`);
