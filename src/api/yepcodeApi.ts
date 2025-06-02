@@ -49,6 +49,11 @@ export class YepCodeApi {
   private timeout: number;
 
   constructor(config: YepCodeApiConfig = {}) {
+    if (typeof fetch !== "function") {
+      throw new Error(
+        `Global fetch API is not available. Please use Node.js 18+ or provide a global fetch polyfill (current node version: ${process.version})`
+      );
+    }
     const finalConfig = {
       apiHost: "https://cloud.yepcode.io",
       timeout: 60000,
