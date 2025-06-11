@@ -52,6 +52,7 @@ export class YepCodeRun {
 
     const process = await this.yepCodeApi.createProcess({
       name: processSlug,
+      tags: ["yc-run"],
       script: {
         programmingLanguage: language.toUpperCase(),
         sourceCode: code,
