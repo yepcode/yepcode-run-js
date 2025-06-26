@@ -104,6 +104,31 @@ const api = new YepCodeApi({ apiToken: '****' });
 const processes = await api.getProcesses();
 ```
 
+### 6. Storage Objects
+
+You can manage files in your YepCode workspace using the `YepCodeStorage` class. This allows you to upload, list, download, and delete files easily.
+
+```js
+const { YepCodeStorage } = require('@yepcode/run');
+const fs = require('fs');
+
+const storage = new YepCodeStorage({ apiToken: '****' });
+
+// Upload a file (using Node.js stream)
+await storage.upload('path/myfile.txt', fs.createReadStream('./myfile.txt'));
+
+// List files
+const files = await storage.list();
+console.log(files);
+
+// Download a file
+const stream = await storage.download('path/myfile.txt');
+stream.pipe(fs.createWriteStream('./downloaded.txt'));
+
+// Delete a file
+await storage.delete('myfile.txt');
+```
+
 ## SDK API Reference
 
 ### YepCodeRun
@@ -288,6 +313,55 @@ interface Process {
   name: string;
   description?: string;
   createdAt: string;
+}
+```
+
+### YepCodeStorage
+
+Manages file storage in your YepCode workspace. Allows you to upload, list, download, and delete files using the YepCode API.
+
+#### Constructor
+
+```typescript
+constructor(options?: {
+  apiToken?: string;  // Optional if YEPCODE_API_TOKEN env var is set
+})
+```
+
+#### Methods
+
+##### `upload(filename: string, file: File | Blob | Readable): Promise<StorageObject>`
+Uploads a file to YepCode storage.
+
+- `filename`: Name to assign to the uploaded file
+- `file`: The file to upload (can be a File, Blob, or Node.js Readable stream)
+- **Returns:** Promise<StorageObject>
+
+##### `list(): Promise<StorageObject[]>`
+Lists all files in YepCode storage.
+
+- **Returns:** Promise<StorageObject[]>
+
+##### `download(filename: string): Promise<Readable>`
+Downloads a file from YepCode storage as a Node.js Readable stream.
+
+- `filename`: Name of the file to download
+- **Returns:** Promise<Readable>
+
+##### `delete(filename: string): Promise<void>`
+Deletes a file from YepCode storage.
+
+- `filename`: Name of the file to delete
+- **Returns:** Promise<void>
+
+##### `StorageObject`
+```typescript
+interface StorageObject {
+  name: string;
+  url: string;
+  size?: number;
+  contentType?: string;
+  createdAt?: string;
 }
 ```
 
