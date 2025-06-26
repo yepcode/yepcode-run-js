@@ -30,7 +30,10 @@ import {
   VersionedModuleAlias,
   VersionedModuleAliasInput,
   VersionedModuleAliasesPaginatedResult,
+  StorageObject,
+  CreateStorageObjectInput,
 } from "./types";
+import { Readable } from "stream";
 
 export class YepCodeApiError extends Error {
   constructor(message: string, public status: number) {
@@ -38,6 +41,14 @@ export class YepCodeApiError extends Error {
     this.name = "YepCodeApiError";
   }
 }
+
+type RequestOptions = {
+  headers?: Record<string, string>;
+  data?: any;
+  params?: Record<string, any>;
+  duplex?: "half" | "full";
+  responseType?: "stream";
+};
 
 export class YepCodeApi {
   private apiHost: string;
@@ -197,28 +208,33 @@ export class YepCodeApi {
   private async request<T>(
     method: string,
     endpoint: string,
-    options: {
-      headers?: Record<string, string>;
-      data?: any;
-      params?: Record<string, any>;
-    } = {}
+    options: RequestOptions = {}
   ): Promise<T> {
     if (!this.accessToken) {
       await this.getAccessToken();
     }
 
+    const isFormData =
+      typeof FormData !== "undefined" && options.data instanceof FormData;
+    const isStream =
+      typeof Readable !== "undefined" && options.data instanceof Readable;
+
     const fetchOptions: RequestInit = {
       method,
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        "Content-Type": "application/json",
+        ...(isFormData || isStream || !options.data
+          ? {}
+          : { "Content-Type": "application/json" }),
         ...(options.headers || {}),
       },
       signal: AbortSignal.timeout(this.timeout),
+      ...(options.duplex && { duplex: options.duplex }),
     };
 
     if (options.data) {
-      fetchOptions.body = JSON.stringify(options.data);
+      fetchOptions.body =
+        isFormData || isStream ? options.data : JSON.stringify(options.data);
     }
 
     const url = new URL(`${this.getBaseURL()}${endpoint}`);
@@ -249,6 +265,15 @@ export class YepCodeApi {
         `HTTP error ${response.status} in endpoint ${method} ${endpoint}: ${message}`,
         response.status
       );
+    }
+
+    if (options.responseType === "stream") {
+      if (typeof response.body?.getReader === "function") {
+        // @ts-ignore
+        return Readable.fromWeb(response.body) as T;
+      }
+      // @ts-ignore
+      return response.body as T;
     }
 
     const responseText = await response.text();
@@ -547,5 +572,59 @@ export class YepCodeApi {
     data: VersionedModuleAliasInput
   ): Promise<VersionedModuleAlias> {
     return this.request("POST", `/modules/${moduleId}/aliases`, { data });
+  }
+
+  async getObjects(): Promise<StorageObject[]> {
+    return this.request("GET", "/storage/objects");
+  }
+
+  async getObject(name: string): Promise<Readable> {
+    return this.request("GET", `/storage/objects/${name}`, {
+      responseType: "stream",
+    });
+  }
+
+  async createObject(data: CreateStorageObjectInput): Promise<StorageObject> {
+    const file = data.file;
+    if (!file) {
+      throw new Error("File or stream is required");
+    }
+
+    const isReadable =
+      typeof Readable !== "undefined" && file instanceof Readable;
+    const isFile = typeof File !== "undefined" && file instanceof File;
+    const isBlob = typeof Blob !== "undefined" && file instanceof Blob;
+    if (!isReadable && !isFile && !isBlob) {
+      throw new Error(
+        "Unsupported file type. Must be File, Blob or Readable stream."
+      );
+    }
+
+    const options: RequestOptions = {};
+    if (isFile || isBlob) {
+      const formData = new FormData();
+      formData.append("file", file);
+      options.data = formData;
+    }
+    if (isReadable) {
+      options.data = file;
+      options.duplex = "half";
+      options.headers = {
+        "Content-Type": "application/octet-stream",
+      };
+    }
+
+    return this.request(
+      "POST",
+      `/storage/objects?name=${encodeURIComponent(data.name)}`,
+      options
+    );
+  }
+
+  async deleteObject(name: string): Promise<void> {
+    return this.request(
+      "DELETE",
+      `/storage/objects/${encodeURIComponent(name)}`
+    );
   }
 }

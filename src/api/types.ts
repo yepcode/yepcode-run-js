@@ -1,3 +1,5 @@
+import { Readable } from "stream";
+
 export interface YepCodeApiConfig {
   authUrl?: string;
   apiHost?: string;
@@ -380,3 +382,21 @@ export interface VersionedModuleAliasesPaginatedResult {
   total?: number;
   data?: VersionedModuleAlias[];
 }
+
+/**
+ * Storage
+ */
+export type StorageObject = {
+  name: string;
+  size: number;
+  md5Hash: string;
+  contentType: string;
+  createdAt: string;
+  updatedAt: string;
+  link: URL;
+};
+
+export type CreateStorageObjectInput = {
+  name: string;
+  file: File | Blob | Readable;
+};
