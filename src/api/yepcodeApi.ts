@@ -164,6 +164,12 @@ export class YepCodeApi {
   }
 
   private async getAccessToken(): Promise<string> {
+    if (!this.clientId || !this.clientSecret) {
+      throw new Error(
+        "AccessToken has expired. Provide a new one or enable automatic refreshing by providing an apiToken or clientId and clientSecret."
+      );
+    }
+
     try {
       const response = await fetch(this.authUrl, {
         method: "POST",
@@ -190,6 +196,19 @@ export class YepCodeApi {
     }
   }
 
+  private isAccessTokenExpired(accessToken: string): boolean {
+    const tokenPayload = accessToken.split(".")[1];
+    if (!tokenPayload) {
+      return true;
+    }
+
+    const decodedPayload = JSON.parse(
+      Buffer.from(tokenPayload, "base64").toString()
+    );
+
+    return decodedPayload.exp < Date.now() / 1000;
+  }
+
   private sanitizeDateParam(date?: Date | string): string | undefined {
     if (!date) {
       return undefined;
@@ -213,7 +232,7 @@ export class YepCodeApi {
     endpoint: string,
     options: RequestOptions = {}
   ): Promise<T> {
-    if (!this.accessToken) {
+    if (!this.accessToken || this.isAccessTokenExpired(this.accessToken)) {
       await this.getAccessToken();
     }
 
