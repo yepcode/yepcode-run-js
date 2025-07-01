@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { YepCodeApi, YepCodeApiError, YepCodeApiManager } from "../api";
+import { YepCodeApi, YepCodeApiError } from "../api";
 import { Execution } from "./execution";
 import { YepCodeApiConfig } from "../api/types";
 import { RunOpts, ExecutionError, Log } from "../types";
@@ -10,7 +10,7 @@ export class YepCodeRun {
   private PROCESS_NAME_PREFIX: string;
 
   constructor(config: YepCodeApiConfig = {}) {
-    this.yepCodeApi = YepCodeApiManager.getInstance(config);
+    this.yepCodeApi = new YepCodeApi(config);
     this.PROCESS_NAME_PREFIX = "yepcode-run-";
   }
 

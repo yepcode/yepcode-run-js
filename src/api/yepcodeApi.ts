@@ -1,3 +1,4 @@
+import { ConfigManager } from "./configManager";
 import {
   YepCodeApiConfig,
   Process,
@@ -65,9 +66,11 @@ export class YepCodeApi {
         `Global fetch API is not available. Please use Node.js 18+ or provide a global fetch polyfill (current node version: ${process.version})`
       );
     }
+    const envConfig = ConfigManager.readYepCodeEnvConfig();
     const finalConfig = {
       apiHost: "https://cloud.yepcode.io",
       timeout: 60000,
+      ...envConfig,
       ...config,
     };
     if (!finalConfig.authUrl) {
