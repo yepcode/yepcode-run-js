@@ -1,4 +1,4 @@
-import { YepCodeApi, YepCodeApiManager } from "../api";
+import { YepCodeApi } from "../api";
 import { StorageObject, YepCodeApiConfig } from "../api/types";
 import { Readable } from "stream";
 
@@ -6,7 +6,7 @@ export class YepCodeStorage {
   private api: YepCodeApi;
 
   constructor(config: YepCodeApiConfig = {}) {
-    this.api = YepCodeApiManager.getInstance(config);
+    this.api = new YepCodeApi(config);
   }
 
   async upload(

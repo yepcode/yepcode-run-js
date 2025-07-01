@@ -1,16 +1,11 @@
-import {
-  YepCodeApiManager,
-  YepCodeApi,
-  YepCodeApiConfig,
-  TeamVariable,
-} from "../api";
+import { YepCodeApi, YepCodeApiConfig, TeamVariable } from "../api";
 import { EnvVar } from "../types";
 
 export class YepCodeEnv {
   private yepCodeApi: YepCodeApi;
 
   constructor(config: YepCodeApiConfig = {}) {
-    this.yepCodeApi = YepCodeApiManager.getInstance(config);
+    this.yepCodeApi = new YepCodeApi(config);
   }
 
   getTeamId(): string {
