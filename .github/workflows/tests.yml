@@ -37,6 +37,6 @@ jobs:
           unset NPM_CONFIG_USER
           npm ci
       - name: Unit tests
-        run: "npm run test"
+        run: "npm run test:ci"
         env:
           YEPCODE_API_TOKEN: ${{ secrets.TEST_YEPCODE_API_TOKEN }}
