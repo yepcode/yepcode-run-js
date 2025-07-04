@@ -59,6 +59,7 @@ export class YepCodeApi {
   private teamId?: string;
   private accessToken?: string;
   private timeout: number;
+  private apiToken?: string;
 
   constructor(config: YepCodeApiConfig = {}) {
     if (typeof fetch !== "function") {
@@ -73,9 +74,6 @@ export class YepCodeApi {
       ...envConfig,
       ...config,
     };
-    if (!finalConfig.authUrl) {
-      finalConfig.authUrl = `${finalConfig.apiHost}/auth/realms/yepcode/protocol/openid-connect/token`;
-    }
 
     if (
       !finalConfig.accessToken &&
@@ -122,13 +120,14 @@ export class YepCodeApi {
     this.apiHost = finalConfig.apiHost;
     this.clientId = finalConfig.clientId;
     this.clientSecret = finalConfig.clientSecret;
-    this.authUrl = finalConfig.authUrl;
+    this.apiToken = finalConfig.apiToken;
     this.teamId = finalConfig.teamId;
     this.accessToken = finalConfig.accessToken;
     this.timeout = finalConfig.timeout;
     if (!this.teamId) {
       this.initTeamId();
     }
+    this.authUrl = finalConfig.authUrl ?? this.getAuthURL();
   }
 
   getTeamId(): string {
@@ -163,8 +162,12 @@ export class YepCodeApi {
     return `${this.apiHost}/api/${this.teamId}/rest`;
   }
 
+  private getAuthURL(): string {
+    return `${this.getBaseURL()}/auth/token`;
+  }
+
   private async getAccessToken(): Promise<string> {
-    if (!this.clientId || !this.clientSecret) {
+    if (!this.apiToken && (!this.clientId || !this.clientSecret)) {
       throw new Error(
         "AccessToken has expired. Provide a new one or enable automatic refreshing by providing an apiToken or clientId and clientSecret."
       );
@@ -174,12 +177,12 @@ export class YepCodeApi {
       const response = await fetch(this.authUrl, {
         method: "POST",
         headers: {
-          authorization: `Basic ${Buffer.from(
-            `${this.clientId}:${this.clientSecret}`
-          ).toString("base64")}`,
-          "Content-Type": "application/x-www-form-urlencoded",
+          "x-api-token":
+            this.apiToken ??
+            `sk-${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString(
+              "base64"
+            )}`,
         },
-        body: "grant_type=client_credentials",
       });
 
       if (!response.ok) {
