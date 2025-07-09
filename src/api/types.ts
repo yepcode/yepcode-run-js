@@ -1,7 +1,6 @@
 import { Readable } from "stream";
 
 export interface YepCodeApiConfig {
-  authUrl?: string;
   apiHost?: string;
   timeout?: number;
   accessToken?: string;
