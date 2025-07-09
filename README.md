@@ -23,6 +23,7 @@ npm install @yepcode/run
 ```
 
 **Requirements:**
+
 - Node.js >= 18.x
 - TypeScript support included (types are bundled with the package)
 
@@ -207,8 +208,10 @@ constructor(options?: {
 Executes code in YepCode's runtime environment.
 
 **Parameters:**
+
 - `code`: Source code to execute (string)
 - `options`: Execution options (optional)
+
   ```typescript
   interface RunOpts {
     language?: 'javascript' | 'python';  // Auto-detected if not specified
@@ -235,6 +238,7 @@ Executes code in YepCode's runtime environment.
 Retrieves an existing execution by ID.
 
 **Parameters:**
+
 - `executionId`: Unique identifier for the execution
 
 **Returns:** Promise<Execution>
@@ -244,6 +248,7 @@ Retrieves an existing execution by ID.
 Represents a code execution instance.
 
 **Properties:**
+
 ```typescript
 interface Execution {
   id: string;                           // Unique identifier
@@ -274,16 +279,20 @@ interface TimelineEvent {
 
 **Methods:**
 
-###### `isDone(): Promise<boolean>`
+##### `isDone(): Promise<boolean>`
+
 Returns whether the execution has completed.
 
 **Returns:** Promise<boolean>
 
-###### `waitForDone(options?: { timeout?: number }): Promise<void>`
+##### `waitForDone(options?: { timeout?: number }): Promise<void>`
+
 Waits for the execution to complete.
 
 **Parameters:**
+
 - `options`: Optional timeout configuration
+
   ```typescript
   interface WaitOptions {
     timeout?: number;  // Timeout in milliseconds
@@ -292,12 +301,14 @@ Waits for the execution to complete.
 
 **Returns:** Promise<void>
 
-###### `kill(): Promise<void>`
+##### `kill(): Promise<void>`
+
 Terminates the execution.
 
 **Returns:** Promise<void>
 
-###### `rerun(): Promise<Execution>`
+##### `rerun(): Promise<Execution>`
+
 Creates a new execution with the same configuration.
 
 **Returns:** Promise<Execution>
@@ -317,9 +328,11 @@ constructor(options?: {
 #### Methods
 
 ##### `getEnvVars(): Promise<EnvVar[]>`
+
 Returns all environment variables.
 
 **Returns:** Promise<EnvVar[]>
+
 ```typescript
 interface EnvVar {
   key: string;
@@ -329,9 +342,11 @@ interface EnvVar {
 ```
 
 ##### `setEnvVar(key: string, value: string, isSensitive?: boolean): Promise<void>`
+
 Sets an environment variable.
 
 **Parameters:**
+
 - `key`: Variable name
 - `value`: Variable value
 - `isSensitive`: Whether the variable contains sensitive data (defaults to true)
@@ -339,9 +354,11 @@ Sets an environment variable.
 **Returns:** Promise<void>
 
 ##### `delEnvVar(key: string): Promise<void>`
+
 Deletes an environment variable.
 
 **Parameters:**
+
 - `key`: Variable name to delete
 
 **Returns:** Promise<void>
@@ -361,9 +378,11 @@ constructor(options?: {
 #### Methods
 
 ##### `getProcesses(): Promise<Process[]>`
+
 Returns all available processes.
 
 **Returns:** Promise<Process[]>
+
 ```typescript
 interface Process {
   id: string;
@@ -388,6 +407,7 @@ constructor(options?: {
 #### Methods
 
 ##### `upload(filename: string, file: File | Blob | Readable): Promise<StorageObject>`
+
 Uploads a file to YepCode storage.
 
 - `filename`: Name to assign to the uploaded file
@@ -395,23 +415,27 @@ Uploads a file to YepCode storage.
 - **Returns:** Promise<StorageObject>
 
 ##### `list(): Promise<StorageObject[]>`
+
 Lists all files in YepCode storage.
 
 - **Returns:** Promise<StorageObject[]>
 
 ##### `download(filename: string): Promise<Readable>`
+
 Downloads a file from YepCode storage as a Node.js Readable stream.
 
 - `filename`: Name of the file to download
 - **Returns:** Promise<Readable>
 
 ##### `delete(filename: string): Promise<void>`
+
 Deletes a file from YepCode storage.
 
 - `filename`: Name of the file to delete
 - **Returns:** Promise<void>
 
 ##### `StorageObject`
+
 ```typescript
 interface StorageObject {
   name: string;
