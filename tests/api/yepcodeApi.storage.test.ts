@@ -9,7 +9,6 @@ const testFilePath = path.join(__dirname, testName);
 const downloadedFile = path.join(__dirname, "./downloaded_test.json");
 
 const apiHost = process.env.YEPCODE_API_HOST;
-const authUrl = process.env.YEPCODE_AUTH_URL;
 const apiToken = process.env.YEPCODE_API_TOKEN;
 
 let api: YepCodeApi;
@@ -31,7 +30,7 @@ const verifyDownloadedFile = async (
 
 describe.skip("YepCodeApi", () => {
   beforeAll(async () => {
-    api = new YepCodeApi({ apiHost, authUrl, apiToken });
+    api = new YepCodeApi({ apiHost, apiToken });
   });
 
   afterEach(async () => {

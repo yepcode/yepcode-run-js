@@ -55,7 +55,6 @@ export class YepCodeApi {
   private apiHost: string;
   private clientId?: string;
   private clientSecret?: string;
-  private authUrl: string;
   private teamId?: string;
   private accessToken?: string;
   private timeout: number;
@@ -127,7 +126,6 @@ export class YepCodeApi {
     if (!this.teamId) {
       this.initTeamId();
     }
-    this.authUrl = finalConfig.authUrl ?? this.getAuthURL();
   }
 
   getTeamId(): string {
@@ -174,7 +172,7 @@ export class YepCodeApi {
     }
 
     try {
-      const response = await fetch(this.authUrl, {
+      const response = await fetch(this.getAuthURL(), {
         method: "POST",
         headers: {
           "x-api-token":
