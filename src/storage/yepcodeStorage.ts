@@ -16,8 +16,8 @@ export class YepCodeStorage {
     return this.api.createObject({ name: filename, file });
   }
 
-  async list(): Promise<StorageObject[]> {
-    return this.api.getObjects();
+  async list({ prefix }: { prefix?: string } = {}): Promise<StorageObject[]> {
+    return this.api.getObjects({ prefix });
   }
 
   async download(filename: string): Promise<Readable> {
