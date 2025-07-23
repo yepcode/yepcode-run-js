@@ -45,6 +45,19 @@ describe.skip("YepCodeStorage", () => {
       const result: StorageObject[] = await storage.list();
       expect(Array.isArray(result)).toBe(true);
     });
+
+    it("should return a list of storage objects with a prefix", async () => {
+      const file: File = new File([readFileSync(testFilePath)], testName);
+      await storage.upload(testName, file);
+
+      const result: StorageObject[] = await storage.list({
+        prefix: "test-run",
+      });
+
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(1);
+      expect(result[0].name).toBe(testName);
+    });
   });
 
   describe("createObject", () => {

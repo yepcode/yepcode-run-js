@@ -597,8 +597,10 @@ export class YepCodeApi {
     return this.request("POST", `/modules/${moduleId}/aliases`, { data });
   }
 
-  async getObjects(): Promise<StorageObject[]> {
-    return this.request("GET", "/storage/objects");
+  async getObjects(
+    params: { prefix?: string } = {}
+  ): Promise<StorageObject[]> {
+    return this.request("GET", "/storage/objects", { params });
   }
 
   async getObject(name: string): Promise<Readable> {
