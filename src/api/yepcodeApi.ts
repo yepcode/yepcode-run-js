@@ -364,6 +364,7 @@ export class YepCodeApi {
   async getProcesses(
     params: {
       keywords?: string;
+      tags?: string[];
       page?: number;
       limit?: number;
     } = {}
