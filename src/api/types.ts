@@ -12,8 +12,13 @@ export interface YepCodeApiConfig {
 
 export interface CreateProcessInput {
   name: string;
+  slug?: string;
   description?: string;
   readme?: string;
+  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  sourceCode?: string;
+  parametersSchema?: string;
+  webhook?: WebhookInput;
   manifest?: ProcessManifestInput;
   settings?: SettingsInput;
   script?: CreateScriptInput;
@@ -51,7 +56,7 @@ export interface Execution {
   id: string;
   processId: string;
   scheduledId?: string;
-  status: "CREATED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
+  status: "CREATED" | "QUEUED" | "DEQUEUED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
   timeline?: ExecutionTimeline;
   parameters?: {
     [name: string]: {
@@ -85,7 +90,7 @@ export interface ExecutionTimeline {
   events?: ExecutionTimelineEvent[];
 }
 export interface ExecutionTimelineEvent {
-  status: "CREATED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
+  status: "CREATED" | "QUEUED" | "DEQUEUED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
   timestamp: string;
   explanation?: string;
 }
@@ -226,10 +231,12 @@ export interface TeamVariablesPaginatedResult {
   data?: TeamVariable[];
 }
 export interface UpdateProcessInput {
-  name: string;
-  slug: string;
+  name?: string;
+  slug?: string;
   description?: string;
   readme?: string;
+  sourceCode?: string;
+  parametersSchema?: string;
   script?: UpdateScriptInput;
   webhook?: WebhookInput;
   settings?: SettingsInput;

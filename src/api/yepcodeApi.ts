@@ -343,6 +343,20 @@ export class YepCodeApi {
     return this.request("POST", `/processes/${processId}/versions`, { data });
   }
 
+  async getProcessVersion(
+    processId: string,
+    versionId: string
+  ): Promise<VersionedProcess> {
+    return this.request("GET", `/processes/${processId}/versions/${versionId}`);
+  }
+
+  async deleteProcessVersion(
+    processId: string,
+    versionId: string
+  ): Promise<void> {
+    return this.request("DELETE", `/processes/${processId}/versions/${versionId}`);
+  }
+
   async getProcessVersionAliases(
     processId: string,
     params: {
@@ -359,6 +373,28 @@ export class YepCodeApi {
     data: VersionedProcessAliasInput
   ): Promise<VersionedProcessAlias> {
     return this.request("POST", `/processes/${processId}/aliases`, { data });
+  }
+
+  async getProcessVersionAlias(
+    processId: string,
+    aliasId: string
+  ): Promise<VersionedProcessAlias> {
+    return this.request("GET", `/processes/${processId}/aliases/${aliasId}`);
+  }
+
+  async updateProcessVersionAlias(
+    processId: string,
+    aliasId: string,
+    data: VersionedProcessAliasInput
+  ): Promise<VersionedProcessAlias> {
+    return this.request("PATCH", `/processes/${processId}/aliases/${aliasId}`, { data });
+  }
+
+  async deleteProcessVersionAlias(
+    processId: string,
+    aliasId: string
+  ): Promise<void> {
+    return this.request("DELETE", `/processes/${processId}/aliases/${aliasId}`);
   }
 
   async getProcesses(
@@ -439,6 +475,8 @@ export class YepCodeApi {
       processId?: string;
       status?:
         | "CREATED"
+        | "QUEUED"
+        | "DEQUEUED"
         | "RUNNING"
         | "FINISHED"
         | "KILLED"
