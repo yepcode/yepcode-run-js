@@ -630,6 +630,20 @@ export class YepCodeApi {
     return this.request("POST", `/modules/${moduleId}/versions`, { data });
   }
 
+  async getModuleVersion(
+    moduleId: string,
+    versionId: string
+  ): Promise<VersionedModule> {
+    return this.request("GET", `/modules/${moduleId}/versions/${versionId}`);
+  }
+
+  async deleteModuleVersion(
+    moduleId: string,
+    versionId: string
+  ): Promise<void> {
+    return this.request("DELETE", `/modules/${moduleId}/versions/${versionId}`);
+  }
+
   async getModuleVersionAliases(
     moduleId: string,
     params: {
@@ -646,6 +660,30 @@ export class YepCodeApi {
     data: VersionedModuleAliasInput
   ): Promise<VersionedModuleAlias> {
     return this.request("POST", `/modules/${moduleId}/aliases`, { data });
+  }
+
+  async getModuleVersionAlias(
+    moduleId: string,
+    aliasId: string
+  ): Promise<VersionedModuleAlias> {
+    return this.request("GET", `/modules/${moduleId}/aliases/${aliasId}`);
+  }
+
+  async updateModuleVersionAlias(
+    moduleId: string,
+    aliasId: string,
+    data: VersionedModuleAliasInput
+  ): Promise<VersionedModuleAlias> {
+    return this.request("PATCH", `/modules/${moduleId}/aliases/${aliasId}`, {
+      data,
+    });
+  }
+
+  async deleteModuleVersionAlias(
+    moduleId: string,
+    aliasId: string
+  ): Promise<void> {
+    return this.request("DELETE", `/modules/${moduleId}/aliases/${aliasId}`);
   }
 
   async getObjects(params: { prefix?: string } = {}): Promise<StorageObject[]> {

@@ -320,6 +320,8 @@ export interface Module {
 
 export interface CreateModuleInput {
   name: string;
+  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  sourceCode?: string;
   script?: {
     programmingLanguage?: string;
     sourceCode?: string;
@@ -328,6 +330,7 @@ export interface CreateModuleInput {
 
 export interface UpdateModuleInput {
   name?: string;
+  sourceCode?: string;
   script?: {
     programmingLanguage?: string;
     sourceCode?: string;
@@ -356,6 +359,10 @@ export interface VersionedModule {
 export interface PublishModuleInput {
   tag: string;
   comment?: string;
+  sourceCode?: string;
+  script?: {
+    sourceCode?: string;
+  };
 }
 
 export interface VersionedModulesPaginatedResult {
