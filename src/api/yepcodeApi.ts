@@ -33,6 +33,10 @@ import {
   VersionedModuleAliasesPaginatedResult,
   StorageObject,
   CreateStorageObjectInput,
+  Token,
+  ServiceAccountInput,
+  ServiceAccount,
+  ServiceAccountsListResult,
 } from "./types";
 import { Readable } from "stream";
 
@@ -690,8 +694,8 @@ export class YepCodeApi {
     return this.request("GET", "/storage/objects", { params });
   }
 
-  async getObject(name: string): Promise<Readable> {
-    return this.request("GET", `/storage/objects/${name}`, {
+  async getObject(filename: string): Promise<Readable> {
+    return this.request("GET", `/storage/objects/${filename}`, {
       responseType: "stream",
     });
   }
@@ -728,15 +732,38 @@ export class YepCodeApi {
 
     return this.request(
       "POST",
-      `/storage/objects?name=${encodeURIComponent(data.name)}`,
+      `/storage/objects?filename=${encodeURIComponent(data.name)}`,
       options
     );
   }
 
-  async deleteObject(name: string): Promise<void> {
+  async deleteObject(filename: string): Promise<void> {
     return this.request(
       "DELETE",
-      `/storage/objects/${encodeURIComponent(name)}`
+      `/storage/objects/${encodeURIComponent(filename)}`
     );
+  }
+
+  // Auth endpoints
+  async getToken(apiToken: string): Promise<Token> {
+    return this.request("POST", "/auth/token", {
+      headers: {
+        "x-api-token": apiToken,
+      },
+    });
+  }
+
+  async getAllServiceAccounts(): Promise<ServiceAccountsListResult> {
+    return this.request("GET", "/auth/service-accounts");
+  }
+
+  async createServiceAccount(
+    data: ServiceAccountInput
+  ): Promise<ServiceAccount> {
+    return this.request("POST", "/auth/service-accounts", { data });
+  }
+
+  async deleteServiceAccount(id: string): Promise<void> {
+    return this.request("DELETE", `/auth/service-accounts/${id}`);
   }
 }

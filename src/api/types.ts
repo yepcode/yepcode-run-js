@@ -56,7 +56,15 @@ export interface Execution {
   id: string;
   processId: string;
   scheduledId?: string;
-  status: "CREATED" | "QUEUED" | "DEQUEUED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
+  status:
+    | "CREATED"
+    | "QUEUED"
+    | "DEQUEUED"
+    | "RUNNING"
+    | "FINISHED"
+    | "KILLED"
+    | "REJECTED"
+    | "ERROR";
   timeline?: ExecutionTimeline;
   parameters?: {
     [name: string]: {
@@ -90,7 +98,15 @@ export interface ExecutionTimeline {
   events?: ExecutionTimelineEvent[];
 }
 export interface ExecutionTimelineEvent {
-  status: "CREATED" | "QUEUED" | "DEQUEUED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
+  status:
+    | "CREATED"
+    | "QUEUED"
+    | "DEQUEUED"
+    | "RUNNING"
+    | "FINISHED"
+    | "KILLED"
+    | "REJECTED"
+    | "ERROR";
   timestamp: string;
   explanation?: string;
 }
@@ -406,10 +422,38 @@ export type StorageObject = {
   contentType: string;
   createdAt: string;
   updatedAt: string;
-  link: URL;
+  link: string;
 };
 
 export type CreateStorageObjectInput = {
   name: string;
   file: File | Blob | Readable;
 };
+
+/**
+ * Auth
+ */
+export interface Token {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+  scope?: string;
+}
+
+export interface ServiceAccountInput {
+  name: string;
+}
+
+export interface ServiceAccount {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  clientId: string;
+  clientSecret: string;
+}
+
+export interface ServiceAccountsListResult {
+  total: number;
+  data: ServiceAccount[];
+}
