@@ -354,7 +354,10 @@ export class YepCodeApi {
     processId: string,
     versionId: string
   ): Promise<void> {
-    return this.request("DELETE", `/processes/${processId}/versions/${versionId}`);
+    return this.request(
+      "DELETE",
+      `/processes/${processId}/versions/${versionId}`
+    );
   }
 
   async getProcessVersionAliases(
@@ -387,7 +390,9 @@ export class YepCodeApi {
     aliasId: string,
     data: VersionedProcessAliasInput
   ): Promise<VersionedProcessAlias> {
-    return this.request("PATCH", `/processes/${processId}/aliases/${aliasId}`, { data });
+    return this.request("PATCH", `/processes/${processId}/aliases/${aliasId}`, {
+      data,
+    });
   }
 
   async deleteProcessVersionAlias(
@@ -547,6 +552,13 @@ export class YepCodeApi {
     return this.request("PUT", `/schedules/${id}/resume`);
   }
 
+  async updateSchedule(
+    id: string,
+    data: ScheduledProcessInput
+  ): Promise<Schedule> {
+    return this.request("PATCH", `/schedules/${id}`, { data });
+  }
+
   async getVariables(
     params: {
       page?: number;
@@ -636,9 +648,7 @@ export class YepCodeApi {
     return this.request("POST", `/modules/${moduleId}/aliases`, { data });
   }
 
-  async getObjects(
-    params: { prefix?: string } = {}
-  ): Promise<StorageObject[]> {
+  async getObjects(params: { prefix?: string } = {}): Promise<StorageObject[]> {
     return this.request("GET", "/storage/objects", { params });
   }
 
