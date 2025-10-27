@@ -33,6 +33,10 @@ import {
   VersionedModuleAliasesPaginatedResult,
   StorageObject,
   CreateStorageObjectInput,
+  Token,
+  ServiceAccountInput,
+  ServiceAccount,
+  ServiceAccountsListResult,
 } from "./types";
 import { Readable } from "stream";
 
@@ -343,6 +347,23 @@ export class YepCodeApi {
     return this.request("POST", `/processes/${processId}/versions`, { data });
   }
 
+  async getProcessVersion(
+    processId: string,
+    versionId: string
+  ): Promise<VersionedProcess> {
+    return this.request("GET", `/processes/${processId}/versions/${versionId}`);
+  }
+
+  async deleteProcessVersion(
+    processId: string,
+    versionId: string
+  ): Promise<void> {
+    return this.request(
+      "DELETE",
+      `/processes/${processId}/versions/${versionId}`
+    );
+  }
+
   async getProcessVersionAliases(
     processId: string,
     params: {
@@ -359,6 +380,30 @@ export class YepCodeApi {
     data: VersionedProcessAliasInput
   ): Promise<VersionedProcessAlias> {
     return this.request("POST", `/processes/${processId}/aliases`, { data });
+  }
+
+  async getProcessVersionAlias(
+    processId: string,
+    aliasId: string
+  ): Promise<VersionedProcessAlias> {
+    return this.request("GET", `/processes/${processId}/aliases/${aliasId}`);
+  }
+
+  async updateProcessVersionAlias(
+    processId: string,
+    aliasId: string,
+    data: VersionedProcessAliasInput
+  ): Promise<VersionedProcessAlias> {
+    return this.request("PATCH", `/processes/${processId}/aliases/${aliasId}`, {
+      data,
+    });
+  }
+
+  async deleteProcessVersionAlias(
+    processId: string,
+    aliasId: string
+  ): Promise<void> {
+    return this.request("DELETE", `/processes/${processId}/aliases/${aliasId}`);
   }
 
   async getProcesses(
@@ -439,6 +484,8 @@ export class YepCodeApi {
       processId?: string;
       status?:
         | "CREATED"
+        | "QUEUED"
+        | "DEQUEUED"
         | "RUNNING"
         | "FINISHED"
         | "KILLED"
@@ -507,6 +554,13 @@ export class YepCodeApi {
 
   async resumeSchedule(id: string): Promise<void> {
     return this.request("PUT", `/schedules/${id}/resume`);
+  }
+
+  async updateSchedule(
+    id: string,
+    data: ScheduledProcessInput
+  ): Promise<Schedule> {
+    return this.request("PATCH", `/schedules/${id}`, { data });
   }
 
   async getVariables(
@@ -580,6 +634,20 @@ export class YepCodeApi {
     return this.request("POST", `/modules/${moduleId}/versions`, { data });
   }
 
+  async getModuleVersion(
+    moduleId: string,
+    versionId: string
+  ): Promise<VersionedModule> {
+    return this.request("GET", `/modules/${moduleId}/versions/${versionId}`);
+  }
+
+  async deleteModuleVersion(
+    moduleId: string,
+    versionId: string
+  ): Promise<void> {
+    return this.request("DELETE", `/modules/${moduleId}/versions/${versionId}`);
+  }
+
   async getModuleVersionAliases(
     moduleId: string,
     params: {
@@ -598,14 +666,36 @@ export class YepCodeApi {
     return this.request("POST", `/modules/${moduleId}/aliases`, { data });
   }
 
-  async getObjects(
-    params: { prefix?: string } = {}
-  ): Promise<StorageObject[]> {
+  async getModuleVersionAlias(
+    moduleId: string,
+    aliasId: string
+  ): Promise<VersionedModuleAlias> {
+    return this.request("GET", `/modules/${moduleId}/aliases/${aliasId}`);
+  }
+
+  async updateModuleVersionAlias(
+    moduleId: string,
+    aliasId: string,
+    data: VersionedModuleAliasInput
+  ): Promise<VersionedModuleAlias> {
+    return this.request("PATCH", `/modules/${moduleId}/aliases/${aliasId}`, {
+      data,
+    });
+  }
+
+  async deleteModuleVersionAlias(
+    moduleId: string,
+    aliasId: string
+  ): Promise<void> {
+    return this.request("DELETE", `/modules/${moduleId}/aliases/${aliasId}`);
+  }
+
+  async getObjects(params: { prefix?: string } = {}): Promise<StorageObject[]> {
     return this.request("GET", "/storage/objects", { params });
   }
 
-  async getObject(name: string): Promise<Readable> {
-    return this.request("GET", `/storage/objects/${name}`, {
+  async getObject(filename: string): Promise<Readable> {
+    return this.request("GET", `/storage/objects/${filename}`, {
       responseType: "stream",
     });
   }
@@ -642,15 +732,38 @@ export class YepCodeApi {
 
     return this.request(
       "POST",
-      `/storage/objects?name=${encodeURIComponent(data.name)}`,
+      `/storage/objects?filename=${encodeURIComponent(data.name)}`,
       options
     );
   }
 
-  async deleteObject(name: string): Promise<void> {
+  async deleteObject(filename: string): Promise<void> {
     return this.request(
       "DELETE",
-      `/storage/objects/${encodeURIComponent(name)}`
+      `/storage/objects/${encodeURIComponent(filename)}`
     );
+  }
+
+  // Auth endpoints
+  async getToken(apiToken: string): Promise<Token> {
+    return this.request("POST", "/auth/token", {
+      headers: {
+        "x-api-token": apiToken,
+      },
+    });
+  }
+
+  async getAllServiceAccounts(): Promise<ServiceAccountsListResult> {
+    return this.request("GET", "/auth/service-accounts");
+  }
+
+  async createServiceAccount(
+    data: ServiceAccountInput
+  ): Promise<ServiceAccount> {
+    return this.request("POST", "/auth/service-accounts", { data });
+  }
+
+  async deleteServiceAccount(id: string): Promise<void> {
+    return this.request("DELETE", `/auth/service-accounts/${id}`);
   }
 }

@@ -12,8 +12,13 @@ export interface YepCodeApiConfig {
 
 export interface CreateProcessInput {
   name: string;
+  slug?: string;
   description?: string;
   readme?: string;
+  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  sourceCode?: string;
+  parametersSchema?: string;
+  webhook?: WebhookInput;
   manifest?: ProcessManifestInput;
   settings?: SettingsInput;
   script?: CreateScriptInput;
@@ -51,7 +56,15 @@ export interface Execution {
   id: string;
   processId: string;
   scheduledId?: string;
-  status: "CREATED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
+  status:
+    | "CREATED"
+    | "QUEUED"
+    | "DEQUEUED"
+    | "RUNNING"
+    | "FINISHED"
+    | "KILLED"
+    | "REJECTED"
+    | "ERROR";
   timeline?: ExecutionTimeline;
   parameters?: {
     [name: string]: {
@@ -85,7 +98,15 @@ export interface ExecutionTimeline {
   events?: ExecutionTimelineEvent[];
 }
 export interface ExecutionTimelineEvent {
-  status: "CREATED" | "RUNNING" | "FINISHED" | "KILLED" | "REJECTED" | "ERROR";
+  status:
+    | "CREATED"
+    | "QUEUED"
+    | "DEQUEUED"
+    | "RUNNING"
+    | "FINISHED"
+    | "KILLED"
+    | "REJECTED"
+    | "ERROR";
   timestamp: string;
   explanation?: string;
 }
@@ -226,10 +247,12 @@ export interface TeamVariablesPaginatedResult {
   data?: TeamVariable[];
 }
 export interface UpdateProcessInput {
-  name: string;
-  slug: string;
+  name?: string;
+  slug?: string;
   description?: string;
   readme?: string;
+  sourceCode?: string;
+  parametersSchema?: string;
   script?: UpdateScriptInput;
   webhook?: WebhookInput;
   settings?: SettingsInput;
@@ -313,6 +336,8 @@ export interface Module {
 
 export interface CreateModuleInput {
   name: string;
+  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  sourceCode?: string;
   script?: {
     programmingLanguage?: string;
     sourceCode?: string;
@@ -321,6 +346,7 @@ export interface CreateModuleInput {
 
 export interface UpdateModuleInput {
   name?: string;
+  sourceCode?: string;
   script?: {
     programmingLanguage?: string;
     sourceCode?: string;
@@ -349,6 +375,10 @@ export interface VersionedModule {
 export interface PublishModuleInput {
   tag: string;
   comment?: string;
+  sourceCode?: string;
+  script?: {
+    sourceCode?: string;
+  };
 }
 
 export interface VersionedModulesPaginatedResult {
@@ -392,10 +422,38 @@ export type StorageObject = {
   contentType: string;
   createdAt: string;
   updatedAt: string;
-  link: URL;
+  link: string;
 };
 
 export type CreateStorageObjectInput = {
   name: string;
   file: File | Blob | Readable;
 };
+
+/**
+ * Auth
+ */
+export interface Token {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+  scope?: string;
+}
+
+export interface ServiceAccountInput {
+  name: string;
+}
+
+export interface ServiceAccount {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  clientId: string;
+  clientSecret: string;
+}
+
+export interface ServiceAccountsListResult {
+  total: number;
+  data: ServiceAccount[];
+}

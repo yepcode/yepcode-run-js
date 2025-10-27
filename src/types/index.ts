@@ -43,6 +43,8 @@ export interface ExecutionData {
 
 export type ExecutionStatus =
   | "CREATED"
+  | "QUEUED"
+  | "DEQUEUED"
   | "RUNNING"
   | "FINISHED"
   | "KILLED"
