@@ -8,6 +8,7 @@ import {
   ExecutionsPaginatedResult,
   Execution,
   ExecutionLogsPaginatedResult,
+  ExecuteProcessSyncResponse,
   Schedule,
   ScheduledProcessInput,
   SchedulesPaginatedResult,
@@ -232,11 +233,16 @@ export class YepCodeApi {
     return date as string;
   }
 
-  private async request<T>(
+  private async request(
     method: string,
     endpoint: string,
-    options: RequestOptions = {}
-  ): Promise<T> {
+    options: RequestOptions = {},
+    settings: {
+      includeHeaders?: boolean;
+    } = {
+      includeHeaders: false,
+    }
+  ): Promise<any> {
     if (!this.accessToken || this.isAccessTokenExpired(this.accessToken)) {
       await this.getAccessToken();
     }
@@ -297,17 +303,24 @@ export class YepCodeApi {
     if (options.responseType === "stream") {
       if (typeof response.body?.getReader === "function") {
         // @ts-ignore
-        return Readable.fromWeb(response.body) as T;
+        return Readable.fromWeb(response.body);
       }
       // @ts-ignore
-      return response.body as T;
+      return response.body;
     }
 
     const responseText = await response.text();
     try {
-      return JSON.parse(responseText);
+      const data = JSON.parse(responseText);
+      if (settings.includeHeaders) {
+        return {
+          data,
+          headers: response.headers,
+        };
+      }
+      return data;
     } catch (e) {
-      return responseText as T;
+      return responseText;
     }
   }
 
@@ -452,21 +465,31 @@ export class YepCodeApi {
       comment?: string;
       settings?: any;
     } = {}
-  ): Promise<any> {
+  ): Promise<ExecuteProcessSyncResponse> {
     const headers: Record<string, string> = {};
     if (options.initiatedBy) {
       headers["Yep-Initiated-By"] = options.initiatedBy;
     }
 
-    return this.request("POST", `/processes/${processIdOrSlug}/execute-sync`, {
-      data: {
-        parameters: JSON.stringify(parameters),
-        tag: options.tag,
-        comment: options.comment,
-        settings: options.settings,
+    const { data, headers: responseHeaders } = await this.request(
+      "POST",
+      `/processes/${processIdOrSlug}/execute-sync`,
+      {
+        data: {
+          parameters: JSON.stringify(parameters),
+          tag: options.tag,
+          comment: options.comment,
+          settings: options.settings,
+        },
+        headers,
       },
-      headers,
-    });
+      { includeHeaders: true }
+    );
+
+    return {
+      executionId: responseHeaders.get("yep-execution-id"),
+      data,
+    };
   }
 
   async createSchedule(
@@ -518,11 +541,7 @@ export class YepCodeApi {
   }
 
   async rerunExecution(id: string): Promise<string> {
-    const response = await this.request<{ executionId: string }>(
-      "POST",
-      `/executions/${id}/rerun`
-    );
-    return response.executionId;
+    return this.request("POST", `/executions/${id}/rerun`);
   }
 
   async killExecution(id: string): Promise<void> {
