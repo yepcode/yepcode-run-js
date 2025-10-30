@@ -82,6 +82,10 @@ export interface Execution {
 export interface ExecutionId {
   executionId: string;
 }
+export interface ExecuteProcessSyncResponse {
+  executionId: string;
+  data: any;
+}
 export interface ExecutionLogsPaginatedResult {
   hasNextPage?: boolean;
   page?: number;
