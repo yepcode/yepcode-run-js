@@ -43,7 +43,7 @@ export interface DependenciesConfigInput {
   autoDetect?: boolean;
 }
 export interface ExecuteProcessInput {
-  parameters?: string;
+  parameters?: Record<string, any>,
   tag?: string;
   comment?: string;
   settings?: ExecuteProcessSettingsInput;

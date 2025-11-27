@@ -496,8 +496,15 @@ export class YepCodeApi {
     processIdOrSlug: string,
     data: ScheduledProcessInput
   ): Promise<Schedule> {
+    const sanitizedData = {
+      ...data,
+      input: {
+        ...data.input,
+        parameters: JSON.stringify(data.input?.parameters),
+      },
+    };
     return this.request("POST", `/processes/${processIdOrSlug}/schedule`, {
-      data,
+      data: sanitizedData,
     });
   }
 
@@ -579,7 +586,16 @@ export class YepCodeApi {
     id: string,
     data: ScheduledProcessInput
   ): Promise<Schedule> {
-    return this.request("PATCH", `/schedules/${id}`, { data });
+    const sanitizedData = {
+      ...data,
+      input: {
+        ...data.input,
+        parameters: JSON.stringify(data.input?.parameters),
+      },
+    };
+    return this.request("PATCH", `/schedules/${id}`, {
+      data: sanitizedData,
+    });
   }
 
   async getVariables(
