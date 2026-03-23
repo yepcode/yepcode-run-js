@@ -38,6 +38,9 @@ import {
   ServiceAccountInput,
   ServiceAccount,
   ServiceAccountsListResult,
+  Sandbox,
+  CreateSandboxInput,
+  UpdateSandboxTimeoutInput,
 } from "./types";
 import { Readable } from "stream";
 
@@ -620,6 +623,21 @@ export class YepCodeApi {
 
   async deleteVariable(id: string): Promise<void> {
     return this.request("DELETE", `/variables/${id}`);
+  }
+
+  async createSandbox(data: CreateSandboxInput): Promise<Sandbox> {
+    return this.request("POST", "/sandboxes", { data });
+  }
+
+  async updateSandboxTimeout(
+    id: string,
+    data: UpdateSandboxTimeoutInput
+  ): Promise<Sandbox> {
+    return this.request("POST", `/sandboxes/${id}`, { data });
+  }
+
+  async killSandbox(id: string): Promise<Sandbox> {
+    return this.request("POST", `/sandboxes/${id}/kill`, {});
   }
 
   async getModules(

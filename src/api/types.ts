@@ -417,6 +417,33 @@ export interface VersionedModuleAliasesPaginatedResult {
 }
 
 /**
+ * Sandboxes
+ */
+export interface CreateSandboxInput {
+  imageId: string;
+  name?: string;
+  metadata?: Record<string, string>;
+  timeoutMs?: number;
+  publicHttpPorts?: number[];
+  publicHttpPortsBasicAuth?: string;
+}
+
+export interface Sandbox {
+  id: string;
+  name: string;
+  grpcServerUrl?: string;
+  grpcApiKey?: string;
+  imageId: string;
+  publicHttpPorts?: number[];
+  metadata?: Record<string, string>;
+  timeoutAt: string;
+}
+
+export interface UpdateSandboxTimeoutInput {
+  timeoutMs: number;
+}
+
+/**
  * Storage
  */
 export type StorageObject = {
