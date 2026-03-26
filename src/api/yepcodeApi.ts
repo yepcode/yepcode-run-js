@@ -40,7 +40,7 @@ import {
   ServiceAccountsListResult,
   Sandbox,
   CreateSandboxInput,
-  UpdateSandboxTimeoutInput,
+  UpdateSandboxInput,
 } from "./types";
 import { Readable } from "stream";
 
@@ -629,10 +629,7 @@ export class YepCodeApi {
     return this.request("POST", "/sandboxes", { data });
   }
 
-  async updateSandboxTimeout(
-    id: string,
-    data: UpdateSandboxTimeoutInput
-  ): Promise<Sandbox> {
+  async updateSandbox(id: string, data: UpdateSandboxInput): Promise<Sandbox> {
     return this.request("POST", `/sandboxes/${id}`, { data });
   }
 

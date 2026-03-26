@@ -43,7 +43,7 @@ export interface DependenciesConfigInput {
   autoDetect?: boolean;
 }
 export interface ExecuteProcessInput {
-  parameters?: Record<string, any>,
+  parameters?: Record<string, any>;
   tag?: string;
   comment?: string;
   settings?: ExecuteProcessSettingsInput;
@@ -423,7 +423,7 @@ export interface CreateSandboxInput {
   imageId: string;
   name?: string;
   metadata?: Record<string, string>;
-  timeoutMs?: number;
+  timeout?: number;
   publicHttpPorts?: number[];
   publicHttpPortsBasicAuth?: string;
 }
@@ -439,8 +439,8 @@ export interface Sandbox {
   timeoutAt: string;
 }
 
-export interface UpdateSandboxTimeoutInput {
-  timeoutMs: number;
+export interface UpdateSandboxInput {
+  timeout: number;
 }
 
 /**
