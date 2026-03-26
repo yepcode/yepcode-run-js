@@ -43,7 +43,7 @@ export interface DependenciesConfigInput {
   autoDetect?: boolean;
 }
 export interface ExecuteProcessInput {
-  parameters?: Record<string, any>,
+  parameters?: Record<string, any>;
   tag?: string;
   comment?: string;
   settings?: ExecuteProcessSettingsInput;
@@ -414,6 +414,33 @@ export interface VersionedModuleAliasesPaginatedResult {
   limit?: number;
   total?: number;
   data?: VersionedModuleAlias[];
+}
+
+/**
+ * Sandboxes
+ */
+export interface CreateSandboxInput {
+  imageId: string;
+  name?: string;
+  metadata?: Record<string, string>;
+  timeout?: number;
+  publicHttpPorts?: number[];
+  publicHttpPortsBasicAuth?: string;
+}
+
+export interface Sandbox {
+  id: string;
+  name: string;
+  grpcServerUrl?: string;
+  grpcApiKey?: string;
+  imageId: string;
+  publicHttpPorts?: number[];
+  metadata?: Record<string, string>;
+  timeoutAt: string;
+}
+
+export interface UpdateSandboxInput {
+  timeout: number;
 }
 
 /**
