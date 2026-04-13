@@ -41,6 +41,13 @@ import {
   Sandbox,
   CreateSandboxInput,
   UpdateSandboxInput,
+  Team,
+  UpdateTeamInput,
+  ProgrammingLanguage,
+  ProgrammingLanguageManifest,
+  UpdateTeamDependenciesInput,
+  ProcessManifest,
+  ProcessManifestInput,
 } from "./types";
 import { Readable } from "stream";
 
@@ -815,5 +822,51 @@ export class YepCodeApi {
 
   async deleteServiceAccount(id: string): Promise<void> {
     return this.request("DELETE", `/auth/service-accounts/${id}`);
+  }
+
+  // Team endpoints
+  async getTeam(): Promise<Team> {
+    return this.request("GET", "/team");
+  }
+
+  async updateTeam(data: UpdateTeamInput): Promise<Team> {
+    return this.request("PATCH", "/team", { data });
+  }
+
+  // Dependencies endpoints
+  async getTeamDependencies(
+    language: ProgrammingLanguage
+  ): Promise<ProgrammingLanguageManifest> {
+    return this.request("GET", `/dependencies/${language}`);
+  }
+
+  async updateTeamDependencies(
+    language: ProgrammingLanguage,
+    data: UpdateTeamDependenciesInput
+  ): Promise<ProgrammingLanguageManifest> {
+    return this.request("PUT", `/dependencies/${language}`, { data });
+  }
+
+  async installTeamDependencies(language: ProgrammingLanguage): Promise<void> {
+    return this.request("POST", `/dependencies/${language}/install`);
+  }
+
+  async discardTeamDependenciesInstallation(
+    language: ProgrammingLanguage
+  ): Promise<ProgrammingLanguageManifest> {
+    return this.request("DELETE", `/dependencies/${language}/install`);
+  }
+
+  async getProcessDependencies(identifier: string): Promise<ProcessManifest> {
+    return this.request("GET", `/processes/${identifier}/dependencies`);
+  }
+
+  async updateProcessDependencies(
+    identifier: string,
+    data: ProcessManifestInput
+  ): Promise<ProcessManifest> {
+    return this.request("PUT", `/processes/${identifier}/dependencies`, {
+      data,
+    });
   }
 }
