@@ -1,5 +1,7 @@
 import { Readable } from "stream";
 
+export type ProgrammingLanguage = "JAVASCRIPT" | "PYTHON";
+
 export interface YepCodeApiConfig {
   apiHost?: string;
   timeout?: number;
@@ -15,7 +17,7 @@ export interface CreateProcessInput {
   slug?: string;
   description?: string;
   readme?: string;
-  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  programmingLanguage?: ProgrammingLanguage;
   sourceCode?: string;
   parametersSchema?: string;
   webhook?: WebhookInput;
@@ -141,7 +143,7 @@ export interface Process {
       [key: string]: any;
     };
   };
-  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  programmingLanguage?: ProgrammingLanguage;
   sourceCode?: string;
   webhook?: ProcessWebhook;
   settings?: ProcessSettings;
@@ -279,7 +281,7 @@ export interface WebhookInput {
 
 export interface VersionedProcess {
   id: string;
-  programmingLanguage: "JAVASCRIPT" | "PYTHON";
+  programmingLanguage: ProgrammingLanguage;
   sourceCode: string;
   parametersSchema: string;
   readme: string;
@@ -330,7 +332,7 @@ export interface VersionedProcessAliasesPaginatedResult {
 export interface Module {
   id: string;
   name: string;
-  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  programmingLanguage?: ProgrammingLanguage;
   sourceCode?: string;
   createdBy?: string;
   createdAt?: string;
@@ -340,7 +342,7 @@ export interface Module {
 
 export interface CreateModuleInput {
   name: string;
-  programmingLanguage?: "JAVASCRIPT" | "PYTHON";
+  programmingLanguage?: ProgrammingLanguage;
   sourceCode?: string;
   script?: {
     programmingLanguage?: string;
@@ -367,7 +369,7 @@ export interface ModulesPaginatedResult {
 
 export interface VersionedModule {
   id: string;
-  programmingLanguage: "JAVASCRIPT" | "PYTHON";
+  programmingLanguage: ProgrammingLanguage;
   sourceCode: string;
   comment?: string;
   createdBy?: string;
@@ -487,4 +489,55 @@ export interface ServiceAccount {
 export interface ServiceAccountsListResult {
   total: number;
   data: ServiceAccount[];
+}
+
+/**
+ * Teams
+ */
+export interface ErrorHandlerConfig {
+  processId?: string;
+  tag?: string;
+}
+
+export interface ErrorHandlerConfigInput {
+  processId?: string;
+  tag?: string;
+}
+
+export interface Team {
+  slug?: string;
+  name?: string;
+  zoneId?: string;
+  parentTeamSlugs?: string[];
+  paramsSchemaValidationEnabled?: boolean;
+  errorHandlerConfig?: ErrorHandlerConfig | null;
+  createdAt?: string;
+}
+
+export interface UpdateTeamInput {
+  name?: string;
+  zoneId?: string;
+  parentTeamSlugs?: string[] | null;
+  paramsSchemaValidationEnabled?: boolean;
+  errorHandlerConfig?: ErrorHandlerConfigInput | null;
+}
+
+/**
+ * Dependencies
+ */
+export interface ProgrammingLanguageManifestInstallation {
+  status?: "PENDING" | "INSTALLING" | "INSTALLED" | "FAILED";
+  error?: string;
+  dependencies?: { [name: string]: string };
+}
+
+export interface ProgrammingLanguageManifest {
+  id?: string;
+  programmingLanguage?: ProgrammingLanguage;
+  dependencies?: { [name: string]: string };
+  nextInstallation?: ProgrammingLanguageManifestInstallation;
+}
+
+export interface UpdateTeamDependenciesInput {
+  dependencies?: { [name: string]: string };
 }
