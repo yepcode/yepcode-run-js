@@ -787,7 +787,7 @@ export class YepCodeApi {
 
     return this.request(
       "POST",
-      `/storage/objects?filename=${encodeURIComponent(data.name)}`,
+      `/storage/objects?name=${encodeURIComponent(data.name)}`,
       options
     );
   }
