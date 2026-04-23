@@ -35,9 +35,6 @@ import {
   StorageObject,
   CreateStorageObjectInput,
   Token,
-  ServiceAccountInput,
-  ServiceAccount,
-  ServiceAccountsListResult,
   Sandbox,
   CreateSandboxInput,
   UpdateSandboxInput,
@@ -806,20 +803,6 @@ export class YepCodeApi {
         "x-api-token": apiToken,
       },
     });
-  }
-
-  async getAllServiceAccounts(): Promise<ServiceAccountsListResult> {
-    return this.request("GET", "/auth/service-accounts");
-  }
-
-  async createServiceAccount(
-    data: ServiceAccountInput
-  ): Promise<ServiceAccount> {
-    return this.request("POST", "/auth/service-accounts", { data });
-  }
-
-  async deleteServiceAccount(id: string): Promise<void> {
-    return this.request("DELETE", `/auth/service-accounts/${id}`);
   }
 
   // Team endpoints
