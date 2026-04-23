@@ -473,24 +473,6 @@ export interface Token {
   scope?: string;
 }
 
-export interface ServiceAccountInput {
-  name: string;
-}
-
-export interface ServiceAccount {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  clientId: string;
-  clientSecret: string;
-}
-
-export interface ServiceAccountsListResult {
-  total: number;
-  data: ServiceAccount[];
-}
-
 /**
  * Teams
  */
