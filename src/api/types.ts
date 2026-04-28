@@ -463,6 +463,17 @@ export type CreateStorageObjectInput = {
   file: File | Blob | Readable;
 };
 
+export type CreateSignedUrlInput = {
+  path: string;
+  expiresInSeconds?: number;
+};
+
+export type SignedUrl = {
+  url: string;
+  path: string;
+  expiresAt: string;
+};
+
 /**
  * Auth
  */
