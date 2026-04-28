@@ -107,7 +107,7 @@ const processes = await api.getProcesses();
 
 ### 6. Storage Objects
 
-You can manage files in your YepCode workspace using the `YepCodeStorage` class. This allows you to upload, list, download, and delete files easily.
+You can manage files in your YepCode workspace using the `YepCodeStorage` class. This allows you to upload, list, download, delete, and generate signed URLs for files easily.
 
 ```js
 const { YepCodeStorage } = require('@yepcode/run');
@@ -125,6 +125,12 @@ console.log(files);
 // Download a file
 const stream = await storage.download('path/myfile.txt');
 stream.pipe(fs.createWriteStream('./downloaded.txt'));
+
+// Create a temporary signed URL (1 hour by default)
+const signedUrl = await storage.createSignedUrl('path/myfile.txt', {
+  expiresInSeconds: 300 // Optional
+});
+console.log(signedUrl.url, signedUrl.expiresAt);
 
 // Delete a file
 await storage.delete('myfile.txt');
@@ -392,9 +398,33 @@ interface Process {
 }
 ```
 
+##### `createSignedUrl(data: CreateSignedUrlInput): Promise<SignedUrl>`
+
+Creates a temporary signed URL for a stored file.
+
+**Parameters:**
+
+- `data.path`: Storage path (filename) to generate a signed URL for
+- `data.expiresInSeconds`: Optional expiry in seconds
+
+**Returns:** Promise<SignedUrl>
+
+```typescript
+interface CreateSignedUrlInput {
+  path: string;
+  expiresInSeconds?: number;
+}
+
+interface SignedUrl {
+  url: string;
+  path: string;
+  expiresAt: string;
+}
+```
+
 ### YepCodeStorage
 
-Manages file storage in your YepCode workspace. Allows you to upload, list, download, and delete files using the YepCode API.
+Manages file storage in your YepCode workspace. Allows you to upload, list, download, delete, and generate signed URLs using the YepCode API.
 
 #### Constructor
 
@@ -434,6 +464,14 @@ Deletes a file from YepCode storage.
 - `filename`: Name of the file to delete
 - **Returns:** Promise<void>
 
+##### `createSignedUrl(filename: string, options?: { expiresInSeconds?: number }): Promise<SignedUrl>`
+
+Creates a temporary signed URL for a file in storage.
+
+- `filename`: Name of the file to generate a signed URL for
+- `options.expiresInSeconds`: Optional expiry in seconds
+- **Returns:** Promise<SignedUrl>
+
 ##### `StorageObject`
 
 ```typescript
@@ -443,6 +481,16 @@ interface StorageObject {
   size?: number;
   contentType?: string;
   createdAt?: string;
+}
+```
+
+##### `SignedUrl`
+
+```typescript
+interface SignedUrl {
+  url: string;
+  path: string;
+  expiresAt: string;
 }
 ```
 
