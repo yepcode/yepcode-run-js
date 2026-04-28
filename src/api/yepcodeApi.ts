@@ -34,6 +34,8 @@ import {
   VersionedModuleAliasesPaginatedResult,
   StorageObject,
   CreateStorageObjectInput,
+  CreateSignedUrlInput,
+  SignedUrl,
   Token,
   Sandbox,
   CreateSandboxInput,
@@ -794,6 +796,10 @@ export class YepCodeApi {
       "DELETE",
       `/storage/objects/${encodeURIComponent(filename)}`
     );
+  }
+
+  async createSignedUrl(data: CreateSignedUrlInput): Promise<SignedUrl> {
+    return this.request("POST", "/storage/signed-urls", { data });
   }
 
   // Auth endpoints

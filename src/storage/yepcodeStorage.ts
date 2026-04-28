@@ -1,5 +1,5 @@
 import { YepCodeApi } from "../api";
-import { StorageObject, YepCodeApiConfig } from "../api/types";
+import { SignedUrl, StorageObject, YepCodeApiConfig } from "../api/types";
 import { Readable } from "stream";
 
 export class YepCodeStorage {
@@ -26,5 +26,12 @@ export class YepCodeStorage {
 
   async delete(filename: string): Promise<void> {
     await this.api.deleteObject(filename);
+  }
+
+  async createSignedUrl(
+    filename: string,
+    options: { expiresInSeconds?: number } = {}
+  ): Promise<SignedUrl> {
+    return this.api.createSignedUrl({ path: filename, ...options });
   }
 }

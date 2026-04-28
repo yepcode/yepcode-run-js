@@ -1,5 +1,6 @@
 import { YepCodeStorage } from "../../src/storage";
-import { StorageObject } from "../../src/api/types";
+import { YepCodeApiError } from "../../src/api/yepcodeApi";
+import { SignedUrl, StorageObject } from "../../src/api/types";
 import fs, { createWriteStream, readFileSync } from "fs";
 import path from "path";
 import { Readable } from "stream";
@@ -115,6 +116,57 @@ describe.skip("YepCodeStorage", () => {
       const result: Readable = await storage.download(testName);
 
       await verifyDownloadedFile(result, downloadedFile, testFilePath);
+    });
+  });
+
+  describe("createSignedUrl", () => {
+    it("should return a signed url with the default expiry", async () => {
+      const file: File = new File([readFileSync(testFilePath)], testName);
+      await storage.upload(testName, file);
+
+      const result: SignedUrl = await storage.createSignedUrl(testName);
+
+      expect(typeof result.url).toBe("string");
+      expect(result.url.length).toBeGreaterThan(0);
+      expect(result.path).toBe(testName);
+
+      const expiresAt = new Date(result.expiresAt).getTime();
+      const expectedExpiry = Date.now() + 3600 * 1000;
+      expect(Math.abs(expiresAt - expectedExpiry)).toBeLessThan(60 * 1000);
+    });
+
+    it("should return a signed url with a custom expiry", async () => {
+      const file: File = new File([readFileSync(testFilePath)], testName);
+      await storage.upload(testName, file);
+
+      const result: SignedUrl = await storage.createSignedUrl(testName, {
+        expiresInSeconds: 60,
+      });
+
+      const expiresAt = new Date(result.expiresAt).getTime();
+      const expectedExpiry = Date.now() + 60 * 1000;
+      expect(Math.abs(expiresAt - expectedExpiry)).toBeLessThan(30 * 1000);
+    });
+
+    it("should throw a 404 when the file does not exist", async () => {
+      await expect(
+        storage.createSignedUrl("does-not-exist.txt")
+      ).rejects.toMatchObject({
+        name: "YepCodeApiError",
+        status: 404,
+      } as Partial<YepCodeApiError>);
+    });
+
+    it("should throw a 400 when expiresInSeconds is out of range", async () => {
+      const file: File = new File([readFileSync(testFilePath)], testName);
+      await storage.upload(testName, file);
+
+      await expect(
+        storage.createSignedUrl(testName, { expiresInSeconds: 999999 })
+      ).rejects.toMatchObject({
+        name: "YepCodeApiError",
+        status: 400,
+      } as Partial<YepCodeApiError>);
     });
   });
 });
